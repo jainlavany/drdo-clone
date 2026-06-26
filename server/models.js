@@ -290,6 +290,13 @@ const HomeBottomLinkSchema = new Schema({
   order:    { type: Number, default: 0 },
 }, { timestamps: true });
 
+// ── Uploaded Files (Database-backed storage) ──────────────────────────────
+const UploadedFileSchema = new Schema({
+  filename:    { type: String, required: true, unique: true },
+  contentType: { type: String, required: true },
+  data:        { type: Buffer, required: true },
+}, { timestamps: true });
+
 module.exports = {
   DrdoNews:         mongoose.model('DrdoNews',         DrdoNewsSchema),
   PressRelease:     mongoose.model('PressRelease',     PressReleaseSchema),
@@ -322,4 +329,5 @@ module.exports = {
   HomeSocialMedia:  mongoose.model('HomeSocialMedia',  HomeSocialMediaSchema),
   HomeMediaSlide:   mongoose.model('HomeMediaSlide',   HomeMediaSlideSchema),
   HomeBottomLink:   mongoose.model('HomeBottomLink',   HomeBottomLinkSchema),
+  UploadedFile:     mongoose.model('UploadedFile',     UploadedFileSchema),
 };

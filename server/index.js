@@ -16,6 +16,7 @@ const {
   AboutDrdo, TechCluster, CorporateCluster,
   PMMessage, HomeMinister, HomeOffering, WhatsNew,
   HomeDocument, HomePersona, HomeSocialMedia, HomeMediaSlide, HomeBottomLink,
+  UploadedFile,
 } = require('./models');
 
 const app = express();
@@ -83,8 +84,25 @@ app.use(cors({
   credentials: true,
 }));
 app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(ensureDb);
+
+app.get('/uploads/:folder/:filename', async (req, res) => {
+  const { folder, filename } = req.params;
+  try {
+    const dbFile = await UploadedFile.findOne({ filename });
+    if (dbFile) {
+      res.set('Content-Type', dbFile.contentType);
+      return res.send(dbFile.data);
+    }
+    const localPath = path.join(__dirname, 'uploads', folder, filename);
+    if (fs.existsSync(localPath)) {
+      return res.sendFile(localPath);
+    }
+    res.status(404).send('File not found');
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
 
 // ── Admin credentials ─────────────────────────────────────────────────────────
 const ADMIN_USER = 'admin';
@@ -103,32 +121,47 @@ function auth(req, res, next) {
 }
 
 // ── Multer setup ──────────────────────────────────────────────────────────────
-function makeStorage(folder) {
-  return multer.diskStorage({
-    destination: (req, file, cb) => {
-      const dir = path.join(__dirname, 'uploads', folder);
-      fs.mkdirSync(dir, { recursive: true });
-      cb(null, dir);
-    },
-    filename: (req, file, cb) => {
-      const unique = `${Date.now()}-${Math.round(Math.random() * 1e6)}`;
-      cb(null, unique + path.extname(file.originalname));
-    },
-  });
-}
-
-const uploadImage = multer({ storage: makeStorage('images'), limits: { fileSize: 10 * 1024 * 1024 } });
-const uploadPdf = multer({ storage: makeStorage('pdfs'), limits: { fileSize: 50 * 1024 * 1024 } });
+const storage = multer.memoryStorage();
+const uploadImage = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } });
+const uploadPdf = multer({ storage, limits: { fileSize: 50 * 1024 * 1024 } });
 
 // ── File upload routes ────────────────────────────────────────────────────────
-app.post('/api/upload/image', auth, uploadImage.single('file'), (req, res) => {
-  if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
-  res.json({ url: `/uploads/images/${req.file.filename}` });
+app.post('/api/upload/image', auth, uploadImage.single('file'), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+    const unique = `${Date.now()}-${Math.round(Math.random() * 1e6)}`;
+    const filename = unique + path.extname(req.file.originalname);
+
+    const dbFile = new UploadedFile({
+      filename,
+      contentType: req.file.mimetype,
+      data: req.file.buffer,
+    });
+    await dbFile.save();
+
+    res.json({ url: `/uploads/images/${filename}` });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
-app.post('/api/upload/pdf', auth, uploadPdf.single('file'), (req, res) => {
-  if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
-  res.json({ url: `/uploads/pdfs/${req.file.filename}`, size: `${(req.file.size / 1024 / 1024).toFixed(2)} MB` });
+app.post('/api/upload/pdf', auth, uploadPdf.single('file'), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+    const unique = `${Date.now()}-${Math.round(Math.random() * 1e6)}`;
+    const filename = unique + path.extname(req.file.originalname);
+
+    const dbFile = new UploadedFile({
+      filename,
+      contentType: req.file.mimetype,
+      data: req.file.buffer,
+    });
+    await dbFile.save();
+
+    res.json({ url: `/uploads/pdfs/${filename}`, size: `${(req.file.size / 1024 / 1024).toFixed(2)} MB` });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // ── Auth routes ───────────────────────────────────────────────────────────────
