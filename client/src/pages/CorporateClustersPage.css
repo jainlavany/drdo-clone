@@ -1,0 +1,157 @@
+
+.cc-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+
+.cc-contact-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.cc-contact-card__title {
+  background: #0d5c75;
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 8px 14px;
+  margin: 0;
+}
+
+.cc-contact-card__body {
+  padding: 14px 16px;
+  font-size: 13.5px;
+  color: #444;
+  line-height: 1.75;
+}
+
+.cc-contact-name {
+  font-weight: 700;
+  font-size: 14px;
+  color: #003a70;
+  margin-bottom: 3px;
+}
+
+.cc-contact-role {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.cc-contact-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 3px;
+}
+
+.cc-contact-row .label {
+  font-weight: 600;
+  color: #003a70;
+  min-width: 55px;
+  flex-shrink: 0;
+  font-size: 13px;
+}
+
+.cc-contact-row .value {
+  color: #444;
+  font-size: 13px;
+}
+
+.cc-contact-row .value a {
+  color: #003a70;
+  text-decoration: none;
+}
+
+.cc-contact-row .value a:hover {
+  text-decoration: underline;
+}
+
+.cc-sub-section-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #003a70;
+  margin: 20px 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid #003a70;
+}
+
+.cc-directorates-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cc-directorate-card {
+  background: #f8f8f8;
+  border: 1px solid #ddd;
+  border-left: 3px solid #0d5c75;
+  padding: 12px 14px;
+}
+
+.cc-directorate-name {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #003a70;
+  margin-bottom: 8px;
+}
+
+.cc-centers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 0;
+}
+
+.cc-center-card {
+  background: #f8f8f8;
+  border: 1px solid #ddd;
+  border-left: 3px solid #003a70;
+  padding: 12px 14px;
+}
+
+.cc-center-name {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #003a70;
+  margin-bottom: 2px;
+}
+
+.cc-center-role {
+  font-size: 12px;
+  color: #777;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+
+.cc-brahmos-notice {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-left: 4px solid #e8720c;
+  padding: 14px 18px;
+  font-size: 13.5px;
+  color: #444;
+  line-height: 1.75;
+  margin-bottom: 0;
+}
+
+.cc-brahmos-notice a {
+  color: #003a70;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.cc-brahmos-notice a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 900px) {
+  .cc-grid {
+    grid-template-columns: 1fr;
+  }
+}

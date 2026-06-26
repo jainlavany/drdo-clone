@@ -1,0 +1,205 @@
+
+
+.about-hero {
+  position: relative;
+  height: 235px;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(8, 92, 92, .92),
+      rgba(8, 92, 92, .75)
+    ),
+    url("../assets/aboutBanner.jpg");
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+}
+
+.about-hero-content {
+  width: min(1120px, 92%);
+  margin: auto;
+  position: relative;
+  z-index: 2;
+}
+
+.about-breadcrumb {
+  color: white;
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+
+.hero-link {
+  color: white;
+  text-decoration: none;
+}
+
+.about-hero h1 {
+  color: white;
+  font-size: 52px;
+  font-weight: 700;
+  margin: 0;
+}
+
+
+
+.about-pill-nav {
+  width: min(1120px, 92%);
+  margin: -24px auto 30px;
+  background: #0d5f61;
+  border-radius: 0 0 24px 24px;
+  display: flex;
+  gap: 35px;
+  padding: 14px 24px;
+  position: relative;
+  z-index: 10;
+}
+
+.about-pill-link {
+  color: white;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.about-pill-link.active {
+  font-weight: 700;
+}
+
+
+
+.about-content-container {
+  width: min(1120px, 92%);
+  margin: 25px auto 60px;
+}
+
+.about-main-section {
+  display: grid;
+  grid-template-columns: 430px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+
+
+.about-image-box {
+  background: #d9ecec;
+  padding: 18px;
+  border-radius: 6px;
+}
+
+.about-drdo-image {
+  width: 100%;
+  display: block;
+}
+
+.about-vm-content {
+  margin-top: 28px;
+}
+
+.about-vm-content h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 12px;
+}
+
+.about-vm-content p {
+  font-size: 13px;
+  line-height: 1.7;
+  margin-bottom: 18px;
+  color: #000;
+}
+
+.about-vm-content ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.about-vm-content li {
+  font-size: 13px;
+  line-height: 1.65;
+  margin-bottom: 8px;
+  color: #000;
+}
+
+
+
+.about-text-box {
+  padding-top: 2px;
+}
+
+.about-text-box p {
+  font-size: 13px;
+  line-height: 1.85;
+  color: #111;
+  text-align: justify;
+  margin-bottom: 12px;
+}
+
+.about-update-date {
+  text-align: right;
+  margin-top: 18px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+}
+
+
+
+@media (max-width: 992px) {
+
+  .about-main-section {
+    grid-template-columns: 1fr;
+  }
+
+  .about-pill-nav {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .about-hero h1 {
+    font-size: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .about-hero {
+    height: 180px;
+  }
+
+  .about-hero h1 {
+    font-size: 32px;
+  }
+
+  .about-pill-nav {
+    margin-top: -15px;
+    padding: 12px 16px;
+  }
+
+  .about-pill-link {
+    font-size: 14px;
+  }
+
+  .about-text-box p,
+  .about-vm-content p,
+  .about-vm-content li {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 576px) {
+
+  .about-pill-nav {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .about-image-box {
+    padding: 12px;
+  }
+
+  .about-hero h1 {
+    font-size: 26px;
+  }
+}

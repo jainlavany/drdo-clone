@@ -1,0 +1,89 @@
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+.skip-link:focus {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: auto;
+  height: auto;
+  z-index: 9999;
+  background: #000;
+  color: #fff;
+  padding: 5px 10px;
+}
+
+.top-access-bar {
+  background: #f0f0f0;
+  border-bottom: 1px solid #ddd;
+  font-size: 12px;
+}
+
+.access-bar-inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 4px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.lang-links {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.lang-links a {
+  color: #333;
+  text-decoration: none;
+  font-size: 12px;
+}
+.lang-links a:hover, .lang-links .lang-active {
+  color: #0d5c75;
+  font-weight: 600;
+}
+.lang-links .divider {
+  color: #999;
+}
+
+.text-size-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.ts-label {
+  font-size: 11px;
+  color: #555;
+  margin-right: 4px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+.text-size-controls button,
+.color-scheme-controls button {
+  background: #ddd;
+  border: 1px solid #bbb;
+  padding: 1px 6px;
+  font-size: 11px;
+  cursor: pointer;
+  color: #333;
+  line-height: 1.6;
+}
+.text-size-controls button:hover,
+.color-scheme-controls button:hover {
+  background: #0d5c75;
+  color: white;
+  border-color: #0d5c75;
+}
+
+.screen-reader-link a {
+  color: #0d5c75;
+  font-size: 12px;
+  text-decoration: underline;
+}

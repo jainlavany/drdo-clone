@@ -1,0 +1,181 @@
+.hero-slider {
+  position: relative;
+  width: 100%;
+  height: 628px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.slides-wrapper {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform .9s ease-in-out;
+}
+
+.slide {
+  width: 100%;
+  height: 100%;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.slide-image,
+.slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  
+  display: block;
+}
+
+
+
+.slider-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 42px;
+  height: 42px;
+  border: none;
+  cursor: pointer;
+  z-index: 20;
+
+  background: rgba(0, 88, 104, 0.9);
+  color: white;
+
+  font-size: 28px;
+  line-height: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 3px;
+}
+
+.slider-arrow.left {
+  left: 12px;
+}
+
+.slider-arrow.right {
+  right: 12px;
+}
+
+.slider-arrow:hover {
+  background: #004f5d;
+}
+
+
+
+.slider-indicators {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+
+  bottom: 18px;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  background: rgba(255, 255, 255, 0.9);
+
+  padding: 6px 10px;
+  border-radius: 25px;
+
+  z-index: 20;
+}
+
+.indicator {
+  width: 12px;
+  height: 12px;
+
+  border: none;
+  border-radius: 50%;
+
+  background: #8ea8ad;
+  cursor: pointer;
+}
+
+.indicator.active {
+  background: #006b77;
+}
+
+.slide-caption {
+  position: absolute;
+  bottom: 52px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  background: rgba(0, 0, 0, 0.88);
+  color: white;
+
+  padding: 12px 38px;
+  font-size: 16px;
+  font-weight: 400;
+
+  z-index: 50;
+  white-space: nowrap;
+}
+
+.slider-pause {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(0, 104, 116, 0.95);
+  color: white;
+
+  border: none;
+  border-radius: 50%;
+
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+
+  z-index: 30;
+  transition: all 0.3s ease;
+}
+
+.slider-pause:hover {
+  background: #004f5d;
+  transform: scale(1.08);
+}
+
+.slider-pause:hover {
+  background: #004f5d;
+}
+
+
+
+@media (max-width: 1200px) {
+  .hero-slider {
+    height: 560px;
+  }
+}
+
+@media (max-width: 992px) {
+  .hero-slider {
+    height: 460px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-slider {
+    height: 300px;
+  }
+
+  .slider-arrow {
+    width: 34px;
+    height: 34px;
+    font-size: 22px;
+  }
+}

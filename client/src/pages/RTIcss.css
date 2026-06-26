@@ -1,0 +1,112 @@
+.rti-page-title {
+  font-size: 42px;
+  color: #0d5f61;
+  margin-bottom: 25px;
+  font-weight: 700;
+}
+
+.rti-disclaimer-box {
+  background: #fff;
+  border-left: 5px solid #0d5f61;
+  padding: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+
+.rti-disclaimer-title {
+  color: #0d5f61;
+  margin-bottom: 12px;
+}
+
+.rti-section {
+  margin-bottom: 40px;
+}
+
+.rti-section-title {
+  font-size: 28px;
+  margin-bottom: 20px;
+  color: #0d5f61;
+  font-weight: 700;
+}
+
+.rti-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 20px;
+}
+
+.rti-stat-card {
+  background: white;
+  border: 1px solid #d8e6e6;
+  padding: 20px;
+}
+
+.rti-stat-label {
+  color: #0d5f61;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+.rti-stat-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.stat-num {
+  font-weight: 700;
+}
+
+.rti-tpa-box {
+  background: white;
+  border: 1px solid #d8e6e6;
+  padding: 20px;
+}
+
+.rti-tpa-title {
+  color: #0d5f61;
+  margin-bottom: 10px;
+}
+
+.rti-documents-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.rti-documents-table th {
+  background: #0d5f61;
+  color: white;
+  padding: 14px;
+  text-align: left;
+}
+
+.rti-documents-table td {
+  padding: 14px;
+  border-bottom: 1px solid #e4e4e4;
+}
+
+.rti-doc-link {
+  background: #0d5f61;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+.rti-last-updated {
+  margin-top: 40px;
+  text-align: center;
+  color: #666;
+}
+
+@media(max-width:768px) {
+  .rti-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rti-page-title {
+    font-size: 32px;
+  }
+}

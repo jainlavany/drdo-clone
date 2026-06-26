@@ -1,0 +1,109 @@
+/* Admin Login — clean white theme */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+.alog-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f6fa;
+  font-family: 'Inter', sans-serif;
+  padding: 1rem;
+}
+
+.alog-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+}
+
+.alog-logo {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.alog-logo-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px; height: 52px;
+  background: #1e4e8c;
+  border-radius: 10px;
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.alog-logo h1 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 0.25rem;
+}
+
+.alog-logo p {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.alog-form { display: flex; flex-direction: column; gap: 1rem; }
+
+.alog-field { display: flex; flex-direction: column; gap: 0.35rem; }
+
+.alog-field label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.alog-field input {
+  padding: 0.65rem 0.85rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #111827;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background: #fff;
+}
+
+.alog-field input:focus {
+  border-color: #1e4e8c;
+  box-shadow: 0 0 0 3px rgba(30,78,140,0.1);
+}
+
+.alog-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 0.6rem 0.85rem;
+  font-size: 0.82rem;
+  color: #b91c1c;
+}
+
+.alog-btn {
+  padding: 0.7rem;
+  background: #1e4e8c;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  margin-top: 0.25rem;
+}
+
+.alog-btn:hover:not(:disabled) { background: #163d73; }
+.alog-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.alog-footer {
+  text-align: center;
+  margin-top: 1.25rem;
+  font-size: 0.72rem;
+  color: #9ca3af;
+}

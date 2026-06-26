@@ -1,0 +1,413 @@
+
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --navy: #003a70;
+  --teal: #0d6664;
+  --teal-dark: #0a5755;
+  --teal-light: #1a7a9a;
+  --accent: #e8720c;
+  --light-bg: #f5f5f5;
+  --border-color: #ddd;
+  --text-dark: #212529;
+  --text-muted: #6c757d;
+  --white: #fff;
+  --font: "Noto Sans", Arial, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font);
+  font-size: 14px;
+  color: var(--text-dark);
+  background: #fff;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+
+
+.container {
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+
+
+.home-offerings-wrapper {
+  background: #f5f5f5;
+  padding: 40px 0;
+}
+
+
+.home-offerings-grid {
+  width: 90%;
+  margin: 0 auto;
+
+  display: grid;
+  grid-template-columns: 2.6fr 1.4fr;
+
+  gap: 30px;
+  align-items: start;
+}
+
+.home-offerings-left,
+.home-offerings-right {
+  min-width: 0;
+}
+
+.offering-tab-btn {
+  height: 48px;
+  font-size: 14px;
+}
+
+.scheme-row {
+  padding: 14px 20px;
+}
+
+
+
+@media (max-width: 1200px) {
+  .home-offerings-grid {
+    grid-template-columns: 3fr 1.2fr;
+  }
+}
+
+@media (max-width: 991px) {
+  .home-offerings-grid {
+    width: 100%;
+    padding: 0 20px;
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 15px;
+  }
+
+  .home-offerings-wrapper {
+    padding: 30px 0;
+  }
+}
+
+/* --- Global Unified Hero & Pill Navigation (from Contact Us Page) --- */
+
+.connect-page-wrapper {
+  width: 100%;
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+.connect-hero {
+  position: relative;
+  height: 240px;
+  background: linear-gradient(
+    90deg,
+    #0d5f61 0%,
+    #167274 45%,
+    #40b3b4 100%
+  );
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.connect-hero-content {
+  width: 1120px;
+  margin: 0 auto;
+  color: white;
+  z-index: 10;
+}
+
+.connect-breadcrumb-mini {
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+.hero-link {
+  color: white;
+  text-decoration: none;
+}
+
+.hero-link:hover {
+  text-decoration: underline;
+}
+
+.connect-hero h1 {
+  margin: 0;
+  font-size: 56px;
+  font-weight: 700;
+  color: white;
+}
+
+.hero-circle {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.08);
+}
+
+.hero-circle:nth-child(2) {
+  width: 90px;
+  height: 90px;
+  top: 110px;
+  left: 45%;
+}
+
+.hero-circle:nth-child(3) {
+  width: 100px;
+  height: 100px;
+  top: 60px;
+  left: 60%;
+}
+
+.hero-circle:nth-child(4) {
+  width: 110px;
+  height: 110px;
+  top: 90px;
+  right: 170px;
+}
+
+.hero-circle:nth-child(5) {
+  width: 120px;
+  height: 120px;
+  top: 75px;
+  right: 30px;
+}
+
+.connect-pill-nav {
+  width: 1120px;
+  margin: -22px auto 30px;
+  background: #0d5f61;
+  border-radius: 50px;
+  padding: 14px 30px;
+  display: flex;
+  gap: 35px;
+  position: relative;
+  z-index: 20;
+}
+
+.connect-subnav-link {
+  color: white;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.connect-subnav-link:hover {
+  color: white;
+}
+
+.connect-subnav-link.active {
+  color: white;
+}
+
+.connect-subnav-link.active::before {
+  content: "⠿";
+  position: absolute;
+  left: -18px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: white;
+}
+
+@media (max-width: 1200px) {
+  .connect-layout,
+  .connect-pill-nav,
+  .connect-hero-content {
+    width: calc(100% - 40px);
+  }
+
+  .connect-hero h1 {
+    font-size: 42px;
+  }
+}
+
+@media (max-width: 768px) {
+  .connect-hero {
+    height: 220px;
+  }
+
+  .connect-hero h1 {
+    font-size: 34px;
+  }
+
+  .connect-pill-nav {
+    gap: 20px;
+    overflow-x: auto;
+    white-space: nowrap;
+    border-radius: 25px;
+    padding: 12px 20px;
+  }
+}
+
+/* --- Global Unified Back Button --- */
+.connect-back-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 36px;
+  padding-bottom: 24px;
+}
+
+.connect-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 24px;
+  background: #0d5f61;
+  color: #fff !important;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  border-radius: 3px;
+  text-transform: uppercase;
+  transition: background 0.2s, transform 0.15s;
+  border: none;
+  cursor: pointer;
+}
+
+.connect-back-btn:hover {
+  background: #0a4c4e;
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+
+/* ==========================================================================
+   ♿ Global Accessibility Styles (Affects Entire Site)
+   ========================================================================== */
+
+/* 1. Saturation (Grayscale) */
+body.accessibility-grayscale {
+  filter: grayscale(100%) !important;
+}
+
+/* 2. Light Contrast */
+body.accessibility-light-contrast {
+  background: #ffffff !important;
+  color: #000000 !important;
+}
+body.accessibility-light-contrast *:not(.reset-btn):not(.accessibility-card):not(.card-icon):not(.close-drawer-btn):not(.drawer-header-icon) {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border-color: #000000 !important;
+}
+body.accessibility-light-contrast a {
+  color: #0000ee !important;
+  text-decoration: underline !important;
+}
+
+/* 3. Dark Mode */
+body.accessibility-dark-mode {
+  background: #121212 !important;
+  color: #e0e0e0 !important;
+}
+body.accessibility-dark-mode *:not(.reset-btn):not(.accessibility-card):not(.card-icon):not(.close-drawer-btn):not(.drawer-header-icon) {
+  background-color: #121212 !important;
+  color: #ffffff !important;
+  border-color: #333333 !important;
+}
+body.accessibility-dark-mode a {
+  color: #8ab4f8 !important;
+  text-decoration: underline !important;
+}
+body.accessibility-dark-mode img {
+  opacity: 0.75 !important;
+}
+
+/* 4. Invert Colors */
+body.accessibility-invert {
+  filter: invert(100%) !important;
+  background: #000000 !important;
+}
+body.accessibility-invert img,
+body.accessibility-invert video,
+body.accessibility-invert iframe {
+  filter: invert(100%) !important;
+}
+
+/* 5 & 6. Font Sizes (Decrease & Increase Text) */
+body.accessibility-font-small,
+body.accessibility-font-small * {
+  font-size: calc(100% - 1.2px) !important;
+}
+body.accessibility-font-large,
+body.accessibility-font-large * {
+  font-size: calc(100% + 2px) !important;
+}
+
+/* 7. Highlight Links */
+body.accessibility-highlight-links a {
+  outline: 2px dashed #ff5722 !important;
+  background-color: #ffeb3b !important;
+  color: #000000 !important;
+  text-decoration: underline !important;
+  font-weight: 700 !important;
+}
+
+/* 8. Hide Images */
+body.accessibility-hide-images img,
+body.accessibility-hide-images picture,
+body.accessibility-hide-images svg:not(.nav-arrow):not(.close-drawer-btn svg):not(.drawer-header-icon) {
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+/* 9. Text Spacing */
+body.accessibility-text-spacing,
+body.accessibility-text-spacing * {
+  letter-spacing: 0.12em !important;
+  word-spacing: 0.16em !important;
+}
+
+/* 10. Line Height */
+body.accessibility-line-height,
+body.accessibility-line-height * {
+  line-height: 1.8 !important;
+}

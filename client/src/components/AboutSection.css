@@ -1,0 +1,159 @@
+.about-section {
+  background: #f4f4f4;
+  padding: 60px 0;
+}
+
+.about-container {
+  max-width: 1650px;
+  margin: 0 auto;
+  padding: 0 40px;
+
+  display: flex;
+  justify-content: space-between;
+  gap: 60px;
+}
+
+.about-left {
+  flex: 1;
+}
+
+.about-heading {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 35px;
+}
+
+.about-heading h2 {
+  margin: 0;
+  font-size: 24px;
+  color: #005d75;
+  font-weight: 700;
+}
+
+.about-icon {
+  color: #005d75;
+  display: flex;
+  align-items: center;
+}
+
+.about-description {
+  font-size: 18px;
+  line-height: 1.8;
+  color: #111;
+  margin-bottom: 12px;
+  text-align: justify;
+}
+
+.about-cards {
+  display: flex;
+  gap: 20px;
+  margin-top: 40px;
+}
+
+.about-card {
+  flex: 1;
+  min-height: 130px;
+
+  border: 1px solid #0a667b;
+  background: white;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-decoration: none;
+  color: #111;
+
+  transition: all 0.3s ease;
+}
+
+.about-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.card-icon {
+  font-size: 30px;
+  color: #0a667b;
+  margin-bottom: 12px;
+}
+
+.about-card h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.about-right {
+  width: 450px;
+  display: flex;
+  gap: 10px;
+}
+
+.minister-card {
+  width: 220px;
+  text-align: center;
+}
+
+.minister-image-wrapper {
+  width: 220px;
+  height: 200px;
+  overflow: hidden;
+  border: 1px solid #d8d8d8;
+  border-bottom: 5px solid #0a667b;
+  background: #fff;
+}
+
+.minister-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.minister-card h3 {
+  margin-top: 12px;
+  margin-bottom: 8px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #111;
+}
+
+.minister-card p {
+  margin: 0;
+  font-size: 14px;
+  color: #222;
+  line-height: 1.5;
+}
+
+@media (max-width: 1200px) {
+  .about-container {
+    flex-direction: column;
+  }
+
+  .about-right {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .about-cards {
+    flex-direction: column;
+  }
+
+  .about-right {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .minister-card {
+    width: 260px;
+  }
+
+  .about-heading h2 {
+    font-size: 30px;
+  }
+}

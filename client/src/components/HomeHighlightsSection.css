@@ -1,0 +1,139 @@
+.home-highlights {
+    max-width: 1400px;
+    margin: 60px auto;
+    padding: 0 20px;
+
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr;
+    gap: 40px;
+}
+
+.home-highlights h2 {
+    color: #005f73;
+    font-size: 32px;
+    font-weight: 700;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    margin-bottom: 30px;
+}
+
+.documents-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.document-card {
+    min-height: 140px;
+    border: 1px solid #0a758a;
+    border-radius: 6px;
+    padding: 22px;
+    text-decoration: none;
+    color: black;
+    background: white;
+}
+
+.document-card h3 {
+    color: #005f73;
+    margin-bottom: 12px;
+}
+
+.document-card:hover {
+    transform: translateY(-4px);
+}
+
+.persona-slider {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.persona-slider button {
+    border: none;
+    background: transparent;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.persona-content {
+    text-decoration: none;
+    text-align: center;
+    color: black;
+}
+
+.persona-content img {
+    width: 240px;
+    height: 240px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.persona-content h3 {
+    margin-top: 20px;
+    color: #005f73;
+}
+
+.dots {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #a7d6d8;
+}
+
+.active-dot {
+    background: #006d77;
+}
+
+.links-scroll {
+    height: 350px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.important-link-card {
+    background: white;
+    color: black;
+    text-decoration: none;
+
+    padding: 22px;
+    margin-bottom: 12px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    border-bottom: 1px solid #d9d9d9;
+}
+
+.view-all-btn {
+    margin-top: 25px;
+    display: inline-block;
+
+    padding: 10px 28px;
+
+    border: 1px solid #0a758a;
+    color: #005f73;
+
+    text-decoration: none;
+    font-weight: 600;
+}
+
+@media (max-width: 1100px) {
+    .home-highlights {
+        grid-template-columns: 1fr;
+    }
+
+    .documents-grid {
+        grid-template-columns: 1fr;
+    }
+}
