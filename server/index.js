@@ -58,18 +58,27 @@ mongoose.connect(MONGO_URI).then(async () => {
 }).catch(err => console.error('❌ MongoDB error (initial):', err));
 
 // ── Middleware ────────────────────────────────────────────────────────────────
-const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173,http://localhost:5174,http://localhost:5175,https://drdo-clone-client.vercel.app')
+const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173,http://localhost:5174,http://localhost:5175')
   .split(',')
   .map(origin => origin.trim())
   .filter(Boolean);
 
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (!origin) {
       callback(null, true);
       return;
     }
-    callback(null, false);
+    const isAllowed = allowedOrigins.includes(origin) ||
+                      origin === 'https://drdo-clone-client.vercel.app' ||
+                      (origin.startsWith('https://') && origin.endsWith('.vercel.app')) ||
+                      origin.includes('localhost') ||
+                      origin.includes('127.0.0.1');
+    if (isAllowed) {
+      callback(null, true);
+    } else {
+      callback(null, false);
+    }
   },
   credentials: true,
 }));
