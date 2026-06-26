@@ -131,9 +131,7 @@ Once successfully started, you should see:
 The portal features an integrated Content Management System (CMS) to manage slides, alerts, news, press releases, etc.
 
 * **Admin Portal URL:** `http://localhost:5173/admin` (or navigate via the footer/header login links)
-* **Default Credentials:**
-  * **Username:** `admin`
-  * **Password:** `admin@123`
+
 
 *(Note: JWT token session lasts for 12 hours once logged in).*
 
