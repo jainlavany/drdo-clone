@@ -1,11 +1,11 @@
-const express  = require('express');
-const cors     = require('cors');
-const bcrypt   = require('bcryptjs');
-const jwt      = require('jsonwebtoken');
+const express = require('express');
+const cors = require('cors');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
-const multer   = require('multer');
-const path     = require('path');
-const fs       = require('fs');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 
 const {
   DrdoNews, PressRelease, ActsPolicy, Vacancy,
@@ -19,18 +19,46 @@ const {
 } = require('./models');
 
 const app = express();
-const PORT       = process.env.PORT || 4000;
+const PORT = process.env.PORT || 4000;
 const JWT_SECRET = process.env.JWT_SECRET || 'drdo_admin_jwt_secret_2026';
-const MONGO_URI  = process.env.MONGO_URI || 'mongodb+srv://lavanyjain25_db_user:87pSnnltXZd834gy@cluster0.9fsuqrc.mongodb.net/?appName=Cluster0';
+const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://lavanyjain25_db_user:lavanyjain@cluster0.9fsuqrc.mongodb.net/?appName=Cluster0';
 
 // ── Connect to MongoDB ────────────────────────────────────────────────────────
+let cachedDb = null;
+
+async function ensureDb(req, res, next) {
+  if (mongoose.connection.readyState === 1) {
+    return next();
+  }
+
+  if (!cachedDb) {
+    cachedDb = mongoose.connect(MONGO_URI).then(async (db) => {
+      console.log('✅ MongoDB connected');
+      await seedIfEmpty();
+      return db;
+    }).catch(err => {
+      cachedDb = null;
+      console.error('❌ MongoDB connection error:', err);
+      throw err;
+    });
+  }
+
+  try {
+    await cachedDb;
+    next();
+  } catch (err) {
+    res.status(500).json({ error: 'Database connection failed', details: err.message });
+  }
+}
+
+// Trigger initial connection (non-blocking)
 mongoose.connect(MONGO_URI).then(async () => {
-  console.log('✅ MongoDB connected');
+  console.log('✅ MongoDB connected (initial)');
   await seedIfEmpty();
-}).catch(err => console.error('❌ MongoDB error:', err));
+}).catch(err => console.error('❌ MongoDB error (initial):', err));
 
 // ── Middleware ────────────────────────────────────────────────────────────────
-const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173,http://localhost:5174,http://localhost:5175')
+const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173,http://localhost:5174,http://localhost:5175,https://drdo-clone-client.vercel.app')
   .split(',')
   .map(origin => origin.trim())
   .filter(Boolean);
@@ -47,6 +75,7 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use(ensureDb);
 
 // ── Admin credentials ─────────────────────────────────────────────────────────
 const ADMIN_USER = 'admin';
@@ -80,7 +109,7 @@ function makeStorage(folder) {
 }
 
 const uploadImage = multer({ storage: makeStorage('images'), limits: { fileSize: 10 * 1024 * 1024 } });
-const uploadPdf   = multer({ storage: makeStorage('pdfs'),   limits: { fileSize: 50 * 1024 * 1024 } });
+const uploadPdf = multer({ storage: makeStorage('pdfs'), limits: { fileSize: 50 * 1024 * 1024 } });
 
 // ── File upload routes ────────────────────────────────────────────────────────
 app.post('/api/upload/image', auth, uploadImage.single('file'), (req, res) => {
@@ -137,45 +166,45 @@ app.get('/api/admin/stats', auth, async (req, res) => {
 // ── Generic CRUD factory ──────────────────────────────────────────────────────
 function crud(Model) {
   const router = express.Router();
-  router.get('/',    async (req, res) => { try { res.json(await Model.find().sort({ createdAt: -1 })); } catch(e){ res.status(500).json({error:e.message}); }});
-  router.get('/:id', async (req, res) => { try { const d = await Model.findById(req.params.id); if(!d) return res.status(404).json({error:'Not found'}); res.json(d); } catch(e){ res.status(500).json({error:e.message}); }});
-  router.post('/',   auth, async (req, res) => { try { const d = await Model.create(req.body); res.status(201).json(d); } catch(e){ res.status(400).json({error:e.message}); }});
-  router.put('/:id', auth, async (req, res) => { try { const d = await Model.findByIdAndUpdate(req.params.id, req.body, {new:true,runValidators:true}); if(!d) return res.status(404).json({error:'Not found'}); res.json(d); } catch(e){ res.status(400).json({error:e.message}); }});
-  router.delete('/:id', auth, async (req, res) => { try { const d = await Model.findByIdAndDelete(req.params.id); if(!d) return res.status(404).json({error:'Not found'}); res.json({deleted:d}); } catch(e){ res.status(500).json({error:e.message}); }});
+  router.get('/', async (req, res) => { try { res.json(await Model.find().sort({ createdAt: -1 })); } catch (e) { res.status(500).json({ error: e.message }); } });
+  router.get('/:id', async (req, res) => { try { const d = await Model.findById(req.params.id); if (!d) return res.status(404).json({ error: 'Not found' }); res.json(d); } catch (e) { res.status(500).json({ error: e.message }); } });
+  router.post('/', auth, async (req, res) => { try { const d = await Model.create(req.body); res.status(201).json(d); } catch (e) { res.status(400).json({ error: e.message }); } });
+  router.put('/:id', auth, async (req, res) => { try { const d = await Model.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true }); if (!d) return res.status(404).json({ error: 'Not found' }); res.json(d); } catch (e) { res.status(400).json({ error: e.message }); } });
+  router.delete('/:id', auth, async (req, res) => { try { const d = await Model.findByIdAndDelete(req.params.id); if (!d) return res.status(404).json({ error: 'Not found' }); res.json({ deleted: d }); } catch (e) { res.status(500).json({ error: e.message }); } });
   return router;
 }
 
-app.use('/api/drdo-in-news',          crud(DrdoNews));
-app.use('/api/press-release',         crud(PressRelease));
-app.use('/api/acts-policies',         crud(ActsPolicy));
-app.use('/api/vacancies',             crud(Vacancy));
-app.use('/api/hero-slides',           crud(HeroSlide));
-app.use('/api/news-ticker',           crud(NewsTicker));
-app.use('/api/photos',                crud(Photo));
-app.use('/api/publications',          crud(Publication));
-app.use('/api/faqs',                  crud(FAQ));
-app.use('/api/important-links',       crud(ImportantLink));
-app.use('/api/avalanche-bulletin',    crud(AvalancheBulletin));
-app.use('/api/forms-manuals',         crud(FormManual));
-app.use('/api/schemes-services',      crud(SchemeService));
-app.use('/api/industry-support',      crud(IndustrySupport));
-app.use('/api/competitions-awards',   crud(CompetitionAward));
-app.use('/api/products',              crud(Product));
-app.use('/api/videos',                crud(Video));
-app.use('/api/conferences',           crud(Conference));
-app.use('/api/onos-publishers',       crud(ONOSPublisher));
-app.use('/api/about-drdo',            crud(AboutDrdo));
-app.use('/api/tech-clusters',         crud(TechCluster));
-app.use('/api/corporate-clusters',    crud(CorporateCluster));
-app.use('/api/pm-message',            crud(PMMessage));
-app.use('/api/home-ministers',        crud(HomeMinister));
-app.use('/api/home-offerings',        crud(HomeOffering));
-app.use('/api/whats-new',             crud(WhatsNew));
-app.use('/api/home-documents',        crud(HomeDocument));
-app.use('/api/home-personas',         crud(HomePersona));
-app.use('/api/home-social-media',     crud(HomeSocialMedia));
-app.use('/api/home-media-slides',     crud(HomeMediaSlide));
-app.use('/api/home-bottom-links',     crud(HomeBottomLink));
+app.use('/api/drdo-in-news', crud(DrdoNews));
+app.use('/api/press-release', crud(PressRelease));
+app.use('/api/acts-policies', crud(ActsPolicy));
+app.use('/api/vacancies', crud(Vacancy));
+app.use('/api/hero-slides', crud(HeroSlide));
+app.use('/api/news-ticker', crud(NewsTicker));
+app.use('/api/photos', crud(Photo));
+app.use('/api/publications', crud(Publication));
+app.use('/api/faqs', crud(FAQ));
+app.use('/api/important-links', crud(ImportantLink));
+app.use('/api/avalanche-bulletin', crud(AvalancheBulletin));
+app.use('/api/forms-manuals', crud(FormManual));
+app.use('/api/schemes-services', crud(SchemeService));
+app.use('/api/industry-support', crud(IndustrySupport));
+app.use('/api/competitions-awards', crud(CompetitionAward));
+app.use('/api/products', crud(Product));
+app.use('/api/videos', crud(Video));
+app.use('/api/conferences', crud(Conference));
+app.use('/api/onos-publishers', crud(ONOSPublisher));
+app.use('/api/about-drdo', crud(AboutDrdo));
+app.use('/api/tech-clusters', crud(TechCluster));
+app.use('/api/corporate-clusters', crud(CorporateCluster));
+app.use('/api/pm-message', crud(PMMessage));
+app.use('/api/home-ministers', crud(HomeMinister));
+app.use('/api/home-offerings', crud(HomeOffering));
+app.use('/api/whats-new', crud(WhatsNew));
+app.use('/api/home-documents', crud(HomeDocument));
+app.use('/api/home-personas', crud(HomePersona));
+app.use('/api/home-social-media', crud(HomeSocialMedia));
+app.use('/api/home-media-slides', crud(HomeMediaSlide));
+app.use('/api/home-bottom-links', crud(HomeBottomLink));
 
 app.get('/api/search', async (req, res) => {
   const query = req.query.q;
@@ -242,7 +271,7 @@ async function seedIfEmpty() {
       { title: 'DRDO News - 03 June 2026', date: '03/06/2026', timestamp: 1780512000, size: '2.13 MB', fileUrl: '', link: '' },
       { title: 'DRDO News - 02 June 2026', date: '02/06/2026', timestamp: 1780425600, size: '1.85 MB', fileUrl: '', link: '' },
       { title: 'DRDO News - 01 June 2026', date: '01/06/2026', timestamp: 1780339200, size: '2.05 MB', fileUrl: '', link: '' },
-      { title: 'DRDO News - 31 May 2026',  date: '31/05/2026', timestamp: 1780252800, size: '1.92 MB', fileUrl: '', link: '' },
+      { title: 'DRDO News - 31 May 2026', date: '31/05/2026', timestamp: 1780252800, size: '1.92 MB', fileUrl: '', link: '' },
     ]);
   }
 
@@ -252,7 +281,7 @@ async function seedIfEmpty() {
     await PressRelease.insertMany([
       { title: 'DRDO opens CBRN Field Training & Demonstration Centre in Delhi', date: '06/05/2026', timestamp: 1778112000, link: 'https://www.pib.gov.in/PressReleasePage.aspx?PRID=2258463' },
       { title: 'Successful flight test of Long-Range Glide Bomb (LRGB) Gaurav', date: '12/04/2026', timestamp: 1776038400, link: 'https://www.pib.gov.in/PressReleasePage.aspx?PRID=2248102' },
-      { title: 'DRDO conducts successful flight test of Rudra-II',              date: '08/04/2026', timestamp: 1775692800, link: 'https://www.pib.gov.in/PressReleasePage.aspx?PRID=2246059' },
+      { title: 'DRDO conducts successful flight test of Rudra-II', date: '08/04/2026', timestamp: 1775692800, link: 'https://www.pib.gov.in/PressReleasePage.aspx?PRID=2246059' },
     ]);
   }
 
@@ -280,7 +309,7 @@ async function seedIfEmpty() {
     console.log('🌱 Seeding HeroSlide...');
     await HeroSlide.insertMany([
       { title: 'Advanced Defence Technologies', subtitle: 'Empowering the Nation through Science & Technology', imageUrl: '', link: '#', order: 1 },
-      { title: 'Missile Systems & Aerospace',   subtitle: 'Cutting-edge research for national security',       imageUrl: '', link: '#', order: 2 },
+      { title: 'Missile Systems & Aerospace', subtitle: 'Cutting-edge research for national security', imageUrl: '', link: '#', order: 2 },
     ]);
   }
 
@@ -311,7 +340,7 @@ async function seedIfEmpty() {
       { title: 'Closing of Operational Avalanche Forecasting Services for Winter Season 2025-26', date: '03-06-2026', timestamp: 1780512000, size: '409.91 KB', fileUrl: '', link: '' },
       { title: 'Avalanche Warning Bulletin - 02 June 2026', date: '02-06-2026', timestamp: 1780425600, size: '720.12 KB', fileUrl: '', link: '' },
       { title: 'Avalanche Warning Bulletin - 01 June 2026', date: '01-06-2026', timestamp: 1780339200, size: '710.45 KB', fileUrl: '', link: '' },
-      { title: 'Avalanche Warning Bulletin - 31 May 2026',  date: '31-05-2026', timestamp: 1780252800, size: '690.30 KB', fileUrl: '', link: '' },
+      { title: 'Avalanche Warning Bulletin - 31 May 2026', date: '31-05-2026', timestamp: 1780252800, size: '690.30 KB', fileUrl: '', link: '' },
     ]);
   }
 
@@ -319,16 +348,16 @@ async function seedIfEmpty() {
   if ((await FormManual.countDocuments()) === 0) {
     console.log('🌱 Seeding FormManual...');
     await FormManual.insertMany([
-      { title: 'Project Closure Form',                              docNo: '—',      type: 'Forms',   category: 'DIA-CoEs',    size: '180.45 KB', fileUrl: '', link: '' },
-      { title: 'Summary of Proposal Basic Information - Form 1',    docNo: 'Form 1*', type: 'Forms',   category: 'DIA-CoEs',    size: '240.12 KB', fileUrl: '', link: '' },
-      { title: 'Guidelines for DIA-CoE Research Proposals',         docNo: '—',      type: 'Manuals', category: 'DIA-CoEs',    size: '1.20 MB',   fileUrl: '', link: '' },
-      { title: 'Research Grant Application Form',                    docNo: 'ER-03',   type: 'Forms',   category: 'ER&IPR',      size: '350.55 KB', fileUrl: '', link: '' },
-      { title: 'Procurement Manual 2025',                            docNo: '—',      type: 'Manuals', category: 'Procurement', size: '4.80 MB',   fileUrl: '', link: '' },
-      { title: 'Utilization Certificate Form',                       docNo: 'Form 5',  type: 'Forms',   category: 'ER&IPR',      size: '120.30 KB', fileUrl: '', link: '' },
-      { title: 'Detailed Proposal Submission Format - Form 2',       docNo: 'Form 2',  type: 'Forms',   category: 'DIA-CoEs',    size: '290.40 KB', fileUrl: '', link: '' },
-      { title: 'Vendor Registration Form',                           docNo: 'PM-02',   type: 'Forms',   category: 'Procurement', size: '185.00 KB', fileUrl: '', link: '' },
-      { title: 'Financial Powers of DRDO Directors (DFPR-2024)',     docNo: '—',      type: 'Manuals', category: 'Admin',       size: '2.50 MB',   fileUrl: '', link: '' },
-      { title: 'Quarterly Progress Report Format',                   docNo: 'Form 4',  type: 'Forms',   category: 'ER&IPR',      size: '145.22 KB', fileUrl: '', link: '' },
+      { title: 'Project Closure Form', docNo: '—', type: 'Forms', category: 'DIA-CoEs', size: '180.45 KB', fileUrl: '', link: '' },
+      { title: 'Summary of Proposal Basic Information - Form 1', docNo: 'Form 1*', type: 'Forms', category: 'DIA-CoEs', size: '240.12 KB', fileUrl: '', link: '' },
+      { title: 'Guidelines for DIA-CoE Research Proposals', docNo: '—', type: 'Manuals', category: 'DIA-CoEs', size: '1.20 MB', fileUrl: '', link: '' },
+      { title: 'Research Grant Application Form', docNo: 'ER-03', type: 'Forms', category: 'ER&IPR', size: '350.55 KB', fileUrl: '', link: '' },
+      { title: 'Procurement Manual 2025', docNo: '—', type: 'Manuals', category: 'Procurement', size: '4.80 MB', fileUrl: '', link: '' },
+      { title: 'Utilization Certificate Form', docNo: 'Form 5', type: 'Forms', category: 'ER&IPR', size: '120.30 KB', fileUrl: '', link: '' },
+      { title: 'Detailed Proposal Submission Format - Form 2', docNo: 'Form 2', type: 'Forms', category: 'DIA-CoEs', size: '290.40 KB', fileUrl: '', link: '' },
+      { title: 'Vendor Registration Form', docNo: 'PM-02', type: 'Forms', category: 'Procurement', size: '185.00 KB', fileUrl: '', link: '' },
+      { title: 'Financial Powers of DRDO Directors (DFPR-2024)', docNo: '—', type: 'Manuals', category: 'Admin', size: '2.50 MB', fileUrl: '', link: '' },
+      { title: 'Quarterly Progress Report Format', docNo: 'Form 4', type: 'Forms', category: 'ER&IPR', size: '145.22 KB', fileUrl: '', link: '' },
     ]);
   }
 
