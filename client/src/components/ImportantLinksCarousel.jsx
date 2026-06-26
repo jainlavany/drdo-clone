@@ -11,7 +11,7 @@ import img6 from "../assets/6.webp";
 import img7 from "../assets/7.webp";
 import img8 from "../assets/8.webp";
 
-const SERVER = 'http://localhost:4000';
+const SERVER = window.SERVER_BASE_URL || 'http://localhost:4000';
 
 const fallbackImages = [img1, img2, img3, img4, img5, img6, img7, img8];
 

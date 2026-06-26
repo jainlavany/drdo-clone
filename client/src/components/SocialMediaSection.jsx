@@ -5,7 +5,7 @@ import twitterImg from "../assets/twitter.png";
 import facebookImg from "../assets/facebook.png";
 import instagramImg from "../assets/insta.png";
 
-const SERVER = 'http://localhost:4000';
+const SERVER = window.SERVER_BASE_URL || 'http://localhost:4000';
 
 const fallbackPlatformImages = {
   'X': twitterImg,

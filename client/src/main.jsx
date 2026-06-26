@@ -5,6 +5,8 @@ import "./i18n.js";
 import App from "./App.jsx";
 import { SERVER_BASE_URL } from "./apiConfig";
 
+window.SERVER_BASE_URL = SERVER_BASE_URL;
+
 const originalFetch = window.fetch.bind(window);
 window.fetch = (input, init) => {
   const inputUrl = typeof input === "string"

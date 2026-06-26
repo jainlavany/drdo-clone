@@ -10,7 +10,7 @@ export default function IndustrySupportPage() {
   const [industryData, setIndustryData] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:4000/api/industry-support')
+    fetch(`${window.SERVER_BASE_URL || 'http://localhost:4000'}/api/industry-support`)
       .then(r => r.json())
       .then(data => setIndustryData(Array.isArray(data) ? data : []))
       .catch(err => console.error('Error fetching industry support:', err));

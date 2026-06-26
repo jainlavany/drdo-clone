@@ -18,7 +18,7 @@ export default function CompetitionsAwardsPage() {
   const [awards, setAwards] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:4000/api/competitions-awards')
+    fetch(`${window.SERVER_BASE_URL || 'http://localhost:4000'}/api/competitions-awards`)
       .then(r => r.json())
       .then(data => setAwards(Array.isArray(data) ? data : []))
       .catch(err => console.error('Error fetching awards:', err));

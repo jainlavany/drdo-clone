@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import "./WhatsNewSection.css";
 
-const SERVER = 'http://localhost:4000';
+const SERVER = window.SERVER_BASE_URL || 'http://localhost:4000';
 
 const fallbackItems = [
   {

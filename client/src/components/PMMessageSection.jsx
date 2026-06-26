@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import "./PMMessageSection.css";
 import modiImg from "../assets/modi.webp";
 
-const SERVER = 'http://localhost:4000';
+const SERVER = window.SERVER_BASE_URL || 'http://localhost:4000';
 
 export default function PMMessageSection() {
   const { t } = useTranslation();

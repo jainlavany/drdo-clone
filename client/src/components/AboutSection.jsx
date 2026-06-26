@@ -6,7 +6,7 @@ import "./AboutSection.css";
 import rajnathSingh from "../assets/rajnathsingh.png";
 import rakshaRM from "../assets/raksharm.jpg";
 
-const SERVER = 'http://localhost:4000';
+const SERVER = window.SERVER_BASE_URL || 'http://localhost:4000';
 
 const fallbackMinisters = [
   { name: "Shri Rajnath Singh", title: "HON'BLE RAKSHA MANTRI", imageUrl: '', _fallbackImg: rajnathSingh },

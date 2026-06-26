@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import './OfferingsSection.css';
 import { FaHandsHelping } from 'react-icons/fa';
 
-const SERVER = 'http://localhost:4000';
+const SERVER = window.SERVER_BASE_URL || 'http://localhost:4000';
 
 const tabs = [
   { id: 'schemes', label: 'Schemes' },

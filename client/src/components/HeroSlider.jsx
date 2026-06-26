@@ -6,7 +6,7 @@ import hero1 from "../assets/1sthero.jpg";
 import hero2 from "../assets/2ndhero.webp";
 import hero3 from "../assets/hero3.jpg";
 
-const SERVER = 'http://localhost:4000';
+const SERVER = window.SERVER_BASE_URL || 'http://localhost:4000';
 
 const fallbackSlides = [
   {

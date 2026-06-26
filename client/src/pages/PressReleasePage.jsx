@@ -30,7 +30,7 @@ export default function PressReleasePage() {
   const [sortOrder, setSortOrder] = useState('latest');
 
   useEffect(() => {
-    fetch('http://localhost:4000/api/press-release')
+    fetch(`${window.SERVER_BASE_URL || 'http://localhost:4000'}/api/press-release`)
       .then(res => res.json())
       .then(data => {
         if (data && data.length > 0) {
@@ -164,7 +164,7 @@ export default function PressReleasePage() {
                 {displayedReleases.length > 0 ? (
                   displayedReleases.map((item, index) => {
                     const targetLink = item.fileUrl
-                      ? (item.fileUrl.startsWith('http') ? item.fileUrl : `http://localhost:4000${item.fileUrl}`)
+                      ? (item.fileUrl.startsWith('http') ? item.fileUrl : `${window.SERVER_BASE_URL || 'http://localhost:4000'}${item.fileUrl}`)
                       : item.link;
                     return (
                       <tr key={item._id || item.id}>

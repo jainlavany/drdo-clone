@@ -17,7 +17,7 @@ import skillseeker from "../assets/skillseeker.png";
 import media from "../assets/media.png";
 import researcher from "../assets/researcher.png";
 
-const SERVER = 'http://localhost:4000';
+const SERVER = window.SERVER_BASE_URL || 'http://localhost:4000';
 
 const fallbackDocuments = [
     { title: "DRDO in News", subtitle: "DRDO News - 05 to 19 June 2026", link: "https://drdo.gov.in/drdo/en/documents/drdo-in-news/drdo-news-05-19-june-2026" },

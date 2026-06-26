@@ -90,7 +90,7 @@ export default function CorporateClusterDetailPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:4000/api/corporate-clusters')
+    fetch(`${window.SERVER_BASE_URL || 'http://localhost:4000'}/api/corporate-clusters`)
       .then(res => res.json())
       .then(data => {
         const found = data.find(c => c.id === clusterId);

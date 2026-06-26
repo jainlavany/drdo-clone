@@ -10,7 +10,7 @@ function ProductCard({ item }) {
 
   // If the image is a local upload path, prepend the backend host
   const imageUrl = item.imageUrl
-    ? (item.imageUrl.startsWith('http') ? item.imageUrl : `http://localhost:4000${item.imageUrl}`)
+    ? (item.imageUrl.startsWith('http') ? item.imageUrl : `${window.SERVER_BASE_URL || 'http://localhost:4000'}${item.imageUrl}`)
     : '';
 
   return (
@@ -48,7 +48,7 @@ export default function ProductsPage() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:4000/api/products')
+    fetch(`${window.SERVER_BASE_URL || 'http://localhost:4000'}/api/products`)
       .then(r => r.json())
       .then(data => setProducts(Array.isArray(data) ? data : []))
       .catch(err => console.error('Error fetching products:', err));

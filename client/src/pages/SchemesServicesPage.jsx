@@ -13,7 +13,7 @@ export default function SchemesServicesPage() {
   const [perPage, setPerPage] = useState(10);
 
   useEffect(() => {
-    fetch('http://localhost:4000/api/schemes-services')
+    fetch(`${window.SERVER_BASE_URL || 'http://localhost:4000'}/api/schemes-services`)
       .then(r => r.json())
       .then(data => setSchemes(Array.isArray(data) ? data : []))
       .catch(err => console.error('Error fetching schemes:', err));

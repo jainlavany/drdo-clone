@@ -126,7 +126,7 @@ export default function PublicationsPage() {
   const [allPubs, setAllPubs] = useState(FLATTENED_STATIC);
 
   useEffect(() => {
-    fetch('http://localhost:4000/api/publications')
+    fetch(`${window.SERVER_BASE_URL || 'http://localhost:4000'}/api/publications`)
       .then(res => res.json())
       .then(data => {
         if (data && data.length > 0) {
@@ -323,7 +323,7 @@ export default function PublicationsPage() {
                       {paginatedData.length > 0 ? (
                         paginatedData.map((item, idx) => {
                           const targetLink = item.fileUrl
-                            ? (item.fileUrl.startsWith('http') ? item.fileUrl : `http://localhost:4000${item.fileUrl}`)
+                            ? (item.fileUrl.startsWith('http') ? item.fileUrl : `${window.SERVER_BASE_URL || 'http://localhost:4000'}${item.fileUrl}`)
                             : (item.link || `https://drdo.gov.in/drdo/sites/default/files/publications/${item.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.pdf`);
                           const formattedDate = item.date || (item.createdAt ? new Date(item.createdAt).toLocaleDateString('en-GB') : '');
                           return (

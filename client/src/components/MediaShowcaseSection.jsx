@@ -8,7 +8,7 @@ import slide1 from "../assets/akash_4.png";
 import slide2 from "../assets/BRAHMOS.jpg";
 import slide3 from "../assets/Varunastra.jpg";
 
-const SERVER = 'http://localhost:4000';
+const SERVER = window.SERVER_BASE_URL || 'http://localhost:4000';
 
 const fallbackSlides = [
     { image: slide1, link: "https://drdo.gov.in/drdo/en/offerings/products/akash" },

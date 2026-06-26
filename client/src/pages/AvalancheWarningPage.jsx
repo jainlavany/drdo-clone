@@ -31,7 +31,7 @@ export default function AvalancheWarningPage() {
   const [bulletins, setBulletins] = useState(initialBulletins);
 
   useEffect(() => {
-    fetch('http://localhost:4000/api/avalanche-bulletin')
+    fetch(`${window.SERVER_BASE_URL || 'http://localhost:4000'}/api/avalanche-bulletin`)
       .then(res => res.json())
       .then(data => {
         if (data && data.length > 0) {
@@ -201,7 +201,7 @@ export default function AvalancheWarningPage() {
                 {paginatedBulletins.length > 0 ? (
                   paginatedBulletins.map((item, index) => {
                     const targetLink = item.fileUrl
-                      ? (item.fileUrl.startsWith('http') ? item.fileUrl : `http://localhost:4000${item.fileUrl}`)
+                      ? (item.fileUrl.startsWith('http') ? item.fileUrl : `${window.SERVER_BASE_URL || 'http://localhost:4000'}${item.fileUrl}`)
                       : (item.link || `https://drdo.gov.in/drdo/sites/default/files/avalanche_warning_bulletin/${item.file}`);
                     return (
                       <tr key={item._id || item.id}>

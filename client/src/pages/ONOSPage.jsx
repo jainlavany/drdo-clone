@@ -67,7 +67,7 @@ export default function ONOSPage() {
   const [pubList, setPubList] = useState(publishers);
 
   useEffect(() => {
-    fetch('http://localhost:4000/api/onos-publishers')
+    fetch(`${window.SERVER_BASE_URL || 'http://localhost:4000'}/api/onos-publishers`)
       .then(res => res.json())
       .then(data => {
         if (data && data.length > 0) {

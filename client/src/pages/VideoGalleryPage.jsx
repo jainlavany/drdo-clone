@@ -80,7 +80,7 @@ export default function VideoGalleryPage() {
   const [perPage, setPerPage] = useState(10);
 
   useEffect(() => {
-    fetch('http://localhost:4000/api/videos')
+    fetch(`${window.SERVER_BASE_URL || 'http://localhost:4000'}/api/videos`)
       .then(res => res.json())
       .then(data => {
         if (data && data.length > 0) {

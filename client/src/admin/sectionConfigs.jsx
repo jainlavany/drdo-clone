@@ -1,7 +1,7 @@
 // Section configurations: fields, column headers, empty rows, row renderers
 // Each field: { key, label, type, options, placeholder, rowStart, rowEnd, searchable, sizeKey }
 
-const SERVER = 'http://localhost:4000';
+const SERVER = window.SERVER_BASE_URL || 'http://localhost:4000';
 
 function link(url) {
   if (!url) return <span style={{ color: '#d1d5db' }}>—</span>;

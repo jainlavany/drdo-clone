@@ -25,7 +25,7 @@ export default function SearchPage() {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`http://localhost:4000/api/search?q=${encodeURIComponent(query)}`);
+        const res = await fetch(`${window.SERVER_BASE_URL || 'http://localhost:4000'}/api/search?q=${encodeURIComponent(query)}`);
         if (!res.ok) throw new Error('Search failed');
         const data = await res.json();
         setResults(data.results || []);

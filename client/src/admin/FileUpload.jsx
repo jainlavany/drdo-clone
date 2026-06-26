@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { uploadFile } from './api';
 
-const SERVER = 'http://localhost:4000';
+const SERVER = window.SERVER_BASE_URL || 'http://localhost:4000';
 
 // Shows a preview of the current value (URL or uploaded path)
 function Preview({ type, url }) {
