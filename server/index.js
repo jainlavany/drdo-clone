@@ -257,7 +257,12 @@ app.get('/api/search', async (req, res) => {
   }
 });
 
-app.get('/api/health', (_, res) => res.json({ status: 'ok', db: mongoose.connection.readyState }));
+app.get('/api/health', (_, res) => res.json({
+  status: 'ok',
+  db: mongoose.connection.readyState,
+  allowedOrigins,
+  corsEnv: process.env.CORS_ORIGIN || 'not set'
+}));
 
 // ── Seed initial data ─────────────────────────────────────────────────────────
 async function seedIfEmpty() {
