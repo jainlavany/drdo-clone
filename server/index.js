@@ -73,10 +73,10 @@ app.use(cors({
       return;
     }
     const isAllowed = allowedOrigins.includes(origin) ||
-                      origin === 'https://drdo-clone-client.vercel.app' ||
-                      (origin.startsWith('https://') && origin.endsWith('.vercel.app')) ||
-                      origin.includes('localhost') ||
-                      origin.includes('127.0.0.1');
+      origin === 'https://drdo-clone-client.vercel.app' ||
+      (origin.startsWith('https://') && origin.endsWith('.vercel.app')) ||
+      origin.includes('localhost') ||
+      origin.includes('127.0.0.1');
     if (isAllowed) {
       callback(null, true);
     } else {
@@ -334,7 +334,7 @@ app.post('/api/chat', async (req, res) => {
 
     const ai = new GoogleGenAI({ apiKey });
 
-    // RAG: Query matching details from FAQs, Products, and Schemes
+    // RAG: Query matching details from FAQs, Products, and Schemes 
     const cleanQuery = message.replace(/[^\w\s]/g, ' ').trim();
     const keywords = cleanQuery.split(/\s+/).filter(w => w.length > 3);
     let matchedSnippets = [];
