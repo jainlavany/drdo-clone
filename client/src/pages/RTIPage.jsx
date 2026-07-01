@@ -1,81 +1,36 @@
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Footer from '../components/Footer';
 import './RTIcss.css';
 
-const rtiStats = [
-  {
-    title: 'RTI Applications',
-    rows: [
-      { label: 'Received', value: '579' },
-      { label: 'Disposed', value: '565' },
-    ],
-  },
-  {
-    title: 'RTI First Appeals',
-    rows: [
-      { label: 'Received', value: '54' },
-      { label: 'Orders Issued', value: '54' },
-    ],
-  },
-  {
-    title: 'RTI Second Appeals',
-    rows: [
-      { label: 'Received', value: '66' },
-      { label: 'Disposed', value: '66' },
-    ],
-  },
-  {
-    title: 'Parliament Questions',
-    rows: [
-      { label: 'Questions Asked', value: '242' },
-      { label: 'Replies Given', value: '206' },
-    ],
-  },
-];
-
-const rtiDocuments = [
-  {
-    id: 1,
-    title: 'Public Authorities under DRDO',
-    description: 'List of Public Information Officers & Appellate Authorities at DRDO HQs',
-    link: "https://drdo.gov.in/drdo/sites/default/files/Basic-PDF/Public_Authorities_under_DRDO_12_06_2026.pdf"
-  },
-  {
-    id: 2,
-    title: 'RTI Officials at DRDO HQ',
-    description: 'List of PIOs & First Appellate Authorities at DRDO HQs',
-    link: "https://drdo.gov.in/drdo/sites/default/files/Basic-PDF/RTI_Officials_at_DRDO_HQ_12_06_2026.pdf"
-  },
-  {
-    id: 3,
-    title: 'RTI Act 2005 (English & Hindi)',
-    description: 'Right to Information Act, 2005',
-    link: "https://drdo.gov.in/drdo/sites/default/files/Basic-PDF/RTI_Act_2005_12_06_2026.pdf"
-  },
-  {
-    id: 4,
-    title: 'How to Submit RTI Form & Fee',
-    description: 'Guidelines for RTI submission and fee payment',
-    link: "https://drdo.gov.in/drdo/sites/default/files/Basic-PDF/How_to_Submit_RTI_Form_Fee_12_06_2026.pdf"
-  },
-  {
-    id: 5,
-    title: 'Exemption under RTI Act 2005',
-    description: 'RTI exemptions applicable to DRDO',
-    link: "https://drdo.gov.in/drdo/sites/default/files/Basic-PDF/Exemption_under_RTI_Act_2005_12_06_2026.pdf"
-  },
-  {
-    id: 6,
-    title: 'Guidelines for Information Seekers',
-    description: 'Information seeker guidelines',
-    link: "https://drdo.gov.in/drdo/sites/default/files/Basic-PDF/Guidelines_for_Information_Seeders_12_06_2026.pdf"
-  },
-];
-
 export default function RTIPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [stats, setStats] = useState([]);
+  const [docs, setDocs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const base = window.SERVER_BASE_URL || 'http://localhost:4000';
+    Promise.all([
+      fetch(`${base}/api/rti-stats`).then(res => res.json()),
+      fetch(`${base}/api/rti-documents`).then(res => res.json())
+    ])
+      .then(([statsData, docsData]) => {
+        if (Array.isArray(statsData)) {
+          setStats(statsData.sort((a, b) => (a.order || 0) - (b.order || 0)));
+        }
+        if (Array.isArray(docsData)) {
+          setDocs(docsData.sort((a, b) => (a.order || 0) - (b.order || 0)));
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Error fetching RTI data:', err);
+        setLoading(false);
+      });
+  }, []);
 
   return (
     <>
@@ -128,81 +83,94 @@ export default function RTIPage() {
               </p>
             </div>
 
-            <section className="rti-section">
-              <h2 className="rti-section-title">
-                {t('RTI Statistics for 2025–2026')}
-              </h2>
+            {loading ? (
+              <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
+                {t("Loading RTI information...")}
+              </div>
+            ) : (
+              <>
+                {stats.length > 0 && (
+                  <section className="rti-section">
+                    <h2 className="rti-section-title">
+                      {t('RTI Statistics for 2025–2026')}
+                    </h2>
 
-              <div className="rti-stats-grid">
-                {rtiStats.map((stat, index) => (
-                  <div key={index} className="rti-stat-card">
-                    <h3 className="rti-stat-label">
-                      {t(stat.title)}
+                    <div className="rti-stats-grid">
+                      {stats.map((stat) => (
+                        <div key={stat._id} className="rti-stat-card">
+                          <h3 className="rti-stat-label">
+                            {t(stat.title)}
+                          </h3>
+                          <div className="rti-stat-row">
+                            <span>{t(stat.label1)}</span>
+                            <span className="stat-num">{stat.value1}</span>
+                          </div>
+                          <div className="rti-stat-row">
+                            <span>{t(stat.label2)}</span>
+                            <span className="stat-num">{stat.value2}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                )}
+
+                <section className="rti-section">
+                  <h2 className="rti-section-title">
+                    {t('Third Party Audit (TPA)')}
+                  </h2>
+                  <div className="rti-tpa-box">
+                    <h3 className="rti-tpa-title">
+                      {t('Third Party Audit – 2024–2025')}
                     </h3>
-
-                    {stat.rows.map((row, i) => (
-                      <div key={i} className="rti-stat-row">
-                        <span>{t(row.label)}</span>
-                        <span className="stat-num">{row.value}</span>
-                      </div>
-                    ))}
+                    <p>
+                      Third Party Audit for the year 2024–2025 was
+                      conducted by <strong>{t("DIAT, Pune")}</strong> in
+                      June 2025. Total marks obtained:
+                      <strong> {t("97%")}</strong>.
+                    </p>
                   </div>
-                ))}
-              </div>
-            </section>
+                </section>
 
-            <section className="rti-section">
-              <h2 className="rti-section-title">
-                {t('Third Party Audit (TPA)')}
-              </h2>
-              <div className="rti-tpa-box">
-                <h3 className="rti-tpa-title">
-                  {t('Third Party Audit – 2024–2025')}
-                </h3>
-                <p>
-                  Third Party Audit for the year 2024–2025 was
-                  conducted by <strong>{t("DIAT, Pune")}</strong> in
-                  June 2025. Total marks obtained:
-                  <strong> {t("97%")}</strong>.
-                </p>
-              </div>
-            </section>
+                {docs.length > 0 && (
+                  <section className="rti-section">
+                    <h2 className="rti-section-title">
+                      {t('RTI Documents')}
+                    </h2>
 
-            <section className="rti-section">
-              <h2 className="rti-section-title">
-                {t('RTI Documents')}
-              </h2>
-
-              <table className="rti-documents-table">
-                <thead>
-                  <tr>
-                    <th>{t('S.No')}</th>
-                    <th>{t('Document Title')}</th>
-                    <th>{t('Description')}</th>
-                    <th>{t('View')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {rtiDocuments.map((doc) => (
-                    <tr key={doc.id}>
-                      <td>{doc.id}</td>
-                      <td>{t(doc.title)}</td>
-                      <td>{t(doc.description)}</td>
-                      <td>
-                        <a
-                          href={doc.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="rti-doc-link"
-                        >
-                          {t('View')}
-                        </a>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </section>
+                    <table className="rti-documents-table">
+                      <thead>
+                        <tr>
+                          <th>{t('S.No')}</th>
+                          <th>{t('Document Title')}</th>
+                          <th>{t('Description')}</th>
+                          <th>{t('View')}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {docs.map((doc, index) => (
+                          <tr key={doc._id}>
+                            <td>{index + 1}</td>
+                            <td>{t(doc.title)}</td>
+                            <td>{t(doc.description)}</td>
+                            <td>
+                              <a
+                                href={doc.fileUrl || doc.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="rti-doc-link"
+                              >
+                                {t('View')}
+                              </a>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </section>
+                )}
+              </>
+            )}
 
             <div className="connect-bottom-actions">
               <button onClick={() => navigate(-1)} className="connect-back-btn" id="rti-back-btn">

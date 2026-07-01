@@ -1,14 +1,35 @@
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
-import rajnathsingh from '../assets/rajnathsingh.png';
-import raksharm from '../assets/raksharm.jpg';
 import './AboutDRDOPage.css';
 import './OurTeamPage.css';
 
 export default function OurTeamPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [team, setTeam] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`${window.SERVER_BASE_URL || 'http://localhost:4000'}/api/team-members`)
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          const sorted = data.sort((a, b) => (a.order || 0) - (b.order || 0));
+          setTeam(sorted);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Error fetching team members:', err);
+        setLoading(false);
+      });
+  }, []);
+
+  const technical = team.filter(m => m.category === 'Technical');
+  const corporate = team.filter(m => m.category === 'Corporate');
+  const nodal     = team.filter(m => m.category === 'Nodal');
 
   return (
     <>
@@ -64,77 +85,6 @@ export default function OurTeamPage() {
         </div>
 
         <div className="about-content-container">
-          {/* Organizational Chart Graph */}
-          <div className="drdo-org-wrapper">
-            {/* Raksha Mantri */}
-            <div className="org-person-card">
-              <div className="org-avatar">
-                <img src={rajnathsingh} alt="Shri Rajnath Singh" className="org-photo" />
-              </div>
-              <h4>{t("HON'BLE RAKSHA MANTRI")}</h4>
-              <p>{t("Shri Rajnath Singh")}</p>
-            </div>
-
-            <div className="org-line"></div>
-
-            {/* Raksha Rajya Mantri */}
-            <div className="org-person-card">
-              <div className="org-avatar">
-                <img src={raksharm} alt="Shri Sanjay Seth" className="org-photo" />
-              </div>
-              <h4>{t("HON'BLE RAKSHA RAJYA MANTRI")}</h4>
-              <p>{t("Shri Sanjay Seth")}</p>
-            </div>
-
-            <div className="org-line"></div>
-
-            {/* Secretary DDR&D & Chairman DRDO */}
-            <div className="org-person-card secretary-card">
-              <h4>
-                {t("SECRETARY DDR&D & CHAIRMAN DRDO")}
-              </h4>
-            </div>
-
-            <div className="connector-2"></div>
-
-            {/* Branch Level 1 */}
-            <div className="org-double-row">
-              <div className="org-small-box">
-                {t("DRDO")}
-              </div>
-              <div className="org-small-box">
-                {t("IFA (R&D)")}
-              </div>
-            </div>
-
-            <div className="connector-3"></div>
-
-            {/* Branch Level 2 */}
-            <div className="org-triple-row">
-              <div className="org-small-box">
-                {t("CORPORATE CLUSTERS")}
-              </div>
-              <div className="org-small-box">
-                {t("TECHNICAL CLUSTERS")}
-              </div>
-              <div className="org-small-box">
-                {t("CEMILAC")}
-              </div>
-            </div>
-
-            <div className="connector-4"></div>
-
-            {/* Branch Level 3 */}
-            <div className="org-double-row sub-row">
-              <div className="org-small-box">
-                {t("LABS")}
-              </div>
-              <div className="org-small-box">
-                {t("DYSLs")}
-              </div>
-            </div>
-          </div>
-
           {/* Secretary Additional Charge Banner */}
           <div className="additional-charge-banner">
             <div className="banner-header">
@@ -145,130 +95,100 @@ export default function OurTeamPage() {
             </div>
           </div>
 
-          {/* Technical Directors General Table */}
-          <div className="team-table-section">
-            <div className="team-table-header">
-              {t("DIRECTORS GENERAL (TECHNICAL)")}
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
+              {t("Loading team members...")}
             </div>
-            <div className="team-table-responsive">
-              <table className="team-table">
-                <thead>
-                  <tr>
-                    <th>{t("NAME")}</th>
-                    <th>{t("CLUSTER")}</th>
-                    <th>{t("DESIGNATION")}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td className="name-cell">{t("Dr. B K Das")}</td>
-                    <td>{t("Electronics and Communication Systems")}</td>
-                    <td>{t("Distinguished Scientist & Director General")}</td>
-                  </tr>
-                  <tr>
-                    <td className="name-cell">{t("Sh. Ummalaneni Raja Babu")}</td>
-                    <td>{t("Missiles and Strategic Systems")}</td>
-                    <td>{t("Distinguished Scientist & Director General")}</td>
-                  </tr>
-                  <tr>
-                    <td className="name-cell">{t("Dr. Upendra Kumar Singh")}</td>
-                    <td>{t("Soldier Support System")}</td>
-                    <td>{t("Distinguished Scientist & Director General")}</td>
-                  </tr>
-                  <tr>
-                    <td className="name-cell">{t("Dr. K Rajalakshmi Menon")}</td>
-                    <td>{t("Aeronautical Systems")}</td>
-                    <td>{t("Distinguished Scientist & Director General")}</td>
-                  </tr>
-                  <tr>
-                    <td className="name-cell">{t("Sh. RVH Prasad")}</td>
-                    <td>{t("Naval Systems and Materials")}</td>
-                    <td>{t("Distinguished Scientist & Director General")}</td>
-                  </tr>
-                  <tr>
-                    <td className="name-cell">{t("Sh. Prateek Kishore")}</td>
-                    <td>{t("Armament & Combat Engineering Systems")}</td>
-                    <td>{t("Distinguished Scientist & Director General")}</td>
-                  </tr>
-                  <tr>
-                    <td className="name-cell">{t("Ms Sheena Rani R")}</td>
-                    <td>{t("Micro Electronic Devices, Computational Systems & Cyber Security")}</td>
-                    <td>{t("Distinguished Scientist & Director General")}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+          ) : (
+            <>
+              {/* Technical Directors General Table */}
+              {technical.length > 0 && (
+                <div className="team-table-section">
+                  <div className="team-table-header">
+                    {t("DIRECTORS GENERAL (TECHNICAL)")}
+                  </div>
+                  <div className="team-table-responsive">
+                    <table className="team-table">
+                      <thead>
+                        <tr>
+                          <th>{t("NAME")}</th>
+                          <th>{t("CLUSTER")}</th>
+                          <th>{t("DESIGNATION")}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {technical.map((m) => (
+                          <tr key={m._id}>
+                            <td className="name-cell">{t(m.name)}</td>
+                            <td>{t(m.cluster)}</td>
+                            <td>{t(m.designation)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
 
-          {/* Corporate Directors General Table */}
-          <div className="team-table-section">
-            <div className="team-table-header">
-              {t("DIRECTORS GENERAL (CORPORATE)")}
-            </div>
-            <div className="team-table-responsive">
-              <table className="team-table">
-                <thead>
-                  <tr>
-                    <th>{t("NAME")}</th>
-                    <th>{t("CLUSTER")}</th>
-                    <th>{t("DESIGNATION")}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td className="name-cell">{t("Sh. Mangal Lal Chand")}</td>
-                    <td>{t("Technology Management")}</td>
-                    <td>{t("Distinguished Scientist & Director General")}</td>
-                  </tr>
-                  <tr>
-                    <td className="name-cell">{t("Dr. (Smt) Chandrika Kaushik")}</td>
-                    <td>{t("Production Coordination & Services Interaction")}</td>
-                    <td>{t("Distinguished Scientist & Director General")}</td>
-                  </tr>
-                  <tr>
-                    <td className="name-cell">{t("Dr. Mayank Dwivedi")}</td>
-                    <td>{t("Human Resources")}</td>
-                    <td>{t("Outstanding Scientist & Director General")}</td>
-                  </tr>
-                  <tr>
-                    <td className="name-cell">{t("Dr. Jaiteerth R. Joshi")}</td>
-                    <td>{t("BrahMos")}</td>
-                    <td>{t("Outstanding Scientist & Director General")}</td>
-                  </tr>
-                  <tr>
-                    <td className="name-cell">{t("Dr. Ravindra Singh")}</td>
-                    <td>{t("Resource & Management")}</td>
-                    <td>{t("Outstanding Scientist & Director General")}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+              {/* Corporate Directors General Table */}
+              {corporate.length > 0 && (
+                <div className="team-table-section">
+                  <div className="team-table-header">
+                    {t("DIRECTORS GENERAL (CORPORATE)")}
+                  </div>
+                  <div className="team-table-responsive">
+                    <table className="team-table">
+                      <thead>
+                        <tr>
+                          <th>{t("NAME")}</th>
+                          <th>{t("CLUSTER")}</th>
+                          <th>{t("DESIGNATION")}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {corporate.map((m) => (
+                          <tr key={m._id}>
+                            <td className="name-cell">{t(m.name)}</td>
+                            <td>{t(m.cluster)}</td>
+                            <td>{t(m.designation)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
 
-          {/* Nodal Officer Table */}
-          <div className="team-table-section">
-            <div className="team-table-header">
-              {t("NODAL OFFICER OF DRDO")}
-            </div>
-            <div className="team-table-responsive">
-              <table className="team-table">
-                <thead>
-                  <tr>
-                    <th>{t("NAME")}</th>
-                    <th>{t("DIRECTORATE")}</th>
-                    <th>{t("DESIGNATION")}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td className="name-cell">{t("Dr. Sanjai K Dwivedi")}</td>
-                    <td>-</td>
-                    <td>{t("Scientist 'G' & Director")}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+              {/* Nodal Officer Table */}
+              {nodal.length > 0 && (
+                <div className="team-table-section">
+                  <div className="team-table-header">
+                    {t("NODAL OFFICER OF DRDO")}
+                  </div>
+                  <div className="team-table-responsive">
+                    <table className="team-table">
+                      <thead>
+                        <tr>
+                          <th>{t("NAME")}</th>
+                          <th>{t("DIRECTORATE")}</th>
+                          <th>{t("DESIGNATION")}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {nodal.map((m) => (
+                          <tr key={m._id}>
+                            <td className="name-cell">{t(m.name)}</td>
+                            <td>{t(m.cluster)}</td>
+                            <td>{t(m.designation)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
 
           <div className="about-update-date">
             {t("Last Update: 03 Jun 2026")}

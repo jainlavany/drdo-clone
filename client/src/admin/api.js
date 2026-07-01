@@ -97,3 +97,7 @@ export const HomePersonaApi     = makeCrud('home-personas');
 export const HomeSocialMediaApi = makeCrud('home-social-media');
 export const HomeMediaSlideApi  = makeCrud('home-media-slides');
 export const HomeBottomLinkApi  = makeCrud('home-bottom-links');
+export const TeamMembersApi     = makeCrud('team-members');
+export const ContactsApi        = makeCrud('contacts');
+export const RtiStatsApi        = makeCrud('rti-stats');
+export const RtiDocumentsApi    = makeCrud('rti-documents');

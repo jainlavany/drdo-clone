@@ -297,6 +297,42 @@ const UploadedFileSchema = new Schema({
   data:        { type: Buffer, required: true },
 }, { timestamps: true });
 
+// ── Team Members ─────────────────────────────────────────────────────────────
+const TeamMemberSchema = new Schema({
+  name:        { type: String, required: true },
+  designation: { type: String, required: true },
+  category:    { type: String, enum: ['Technical', 'Corporate', 'Nodal'], default: 'Technical' },
+  cluster:     { type: String, default: '' },
+  order:       { type: Number, default: 0 },
+}, { timestamps: true });
+
+// ── Contact Items ────────────────────────────────────────────────────────────
+const ContactSchema = new Schema({
+  label: { type: String, required: true },
+  org:   { type: String, required: true },
+  phone: { type: String, default: '' },
+  email: { type: String, default: '' },
+  order: { type: Number, default: 0 },
+}, { timestamps: true });
+
+// ── RTI Statistics ───────────────────────────────────────────────────────────
+const RtiStatSchema = new Schema({
+  title:  { type: String, required: true },
+  label1: { type: String, required: true },
+  value1: { type: String, required: true },
+  label2: { type: String, required: true },
+  value2: { type: String, required: true },
+  order:  { type: Number, default: 0 },
+}, { timestamps: true });
+
+// ── RTI Documents ────────────────────────────────────────────────────────────
+const RtiDocumentSchema = new Schema({
+  title:       { type: String, required: true },
+  description: { type: String, default: '' },
+  link:        { type: String, default: '' },
+  order:       { type: Number, default: 0 },
+}, { timestamps: true });
+
 module.exports = {
   DrdoNews:         mongoose.model('DrdoNews',         DrdoNewsSchema),
   PressRelease:     mongoose.model('PressRelease',     PressReleaseSchema),
@@ -330,4 +366,9 @@ module.exports = {
   HomeMediaSlide:   mongoose.model('HomeMediaSlide',   HomeMediaSlideSchema),
   HomeBottomLink:   mongoose.model('HomeBottomLink',   HomeBottomLinkSchema),
   UploadedFile:     mongoose.model('UploadedFile',     UploadedFileSchema),
+  TeamMember:       mongoose.model('TeamMember',       TeamMemberSchema),
+  Contact:          mongoose.model('Contact',          ContactSchema),
+  RtiStat:          mongoose.model('RtiStat',          RtiStatSchema),
+  RtiDocument:      mongoose.model('RtiDocument',      RtiDocumentSchema),
 };
+

@@ -8,6 +8,7 @@ import { logout, verifyToken, getStats,
   VideosApi, ConferencesApi, ONOSPublisherApi,
   PMMessageApi, HomeMinisterApi, HomeOfferingApi, WhatsNewApi,
   HomeDocumentApi, HomePersonaApi, HomeSocialMediaApi, HomeMediaSlideApi, HomeBottomLinkApi,
+  TeamMembersApi, ContactsApi, RtiStatsApi, RtiDocumentsApi,
 } from './api';
 import Section, { Toast } from './Section';
 import { AboutDrdoCMS, TechClustersCMS, CorporateClustersCMS } from './OrganisationCMS';
@@ -19,15 +20,18 @@ import {
   VIDEO_CFG, CONFERENCE_CFG, ONOS_CFG,
   PM_MSG_CFG, MINISTER_CFG, HOME_OFFERING_CFG, WHATS_NEW_CFG,
   HOME_DOC_CFG, HOME_PERSONA_CFG, HOME_SOCIAL_CFG, HOME_MEDIA_SLIDE_CFG, HOME_BOTTOM_LINK_CFG,
+  TEAM_CFG, CONTACT_CFG, RTI_STATS_CFG, RTI_DOCS_CFG,
 } from './sectionConfigs';
 import './AdminDashboard.css';
 
+// ── Nav items ─────────────────────────────────────────────────────────────────
 // ── Nav items ─────────────────────────────────────────────────────────────────
 const NAV = [
   { id: 'overview',           icon: '📊', label: 'Overview',                group: 'General' },
   { id: 'about-drdo',         icon: '📝', label: 'About DRDO',              group: 'Organisation' },
   { id: 'tech-clusters',      icon: '✈️', label: 'Tech Clusters',            group: 'Organisation' },
   { id: 'corporate-clusters', icon: '🏢', label: 'Corporate Clusters',       group: 'Organisation' },
+  { id: 'team-members',       icon: '👥', label: 'Our Team Members',        group: 'Organisation' },
   { id: 'hero-slides',        icon: '🖼️', label: 'Hero Slides',             group: 'Home Page' },
   { id: 'news-ticker',        icon: '📡', label: 'News Ticker',             group: 'Home Page' },
   { id: 'pm-message',         icon: '💬', label: 'PM Message',              group: 'Home Page' },
@@ -56,6 +60,9 @@ const NAV = [
   { id: 'onos-publishers',    icon: '📖', label: 'ONOS Publishers',         group: 'Resources' },
   { id: 'faqs',               icon: '❓', label: 'FAQs',                    group: 'Connect' },
   { id: 'important-links',    icon: '🔗', label: 'Important Links',           group: 'Connect' },
+  { id: 'contacts',           icon: '📞', label: 'Contact Us Items',        group: 'Connect' },
+  { id: 'rti-stats',          icon: '📊', label: 'RTI Statistics',          group: 'Connect' },
+  { id: 'rti-documents',      icon: '📄', label: 'RTI Documents',           group: 'Connect' },
 ];
 
 const STAT_KEYS = {
@@ -81,6 +88,10 @@ const STAT_KEYS = {
   'home-social-media':  'home_social_media',
   'home-media-slides':  'home_media_slides',
   'home-bottom-links':  'home_bottom_links',
+  'team-members':       'team_members',
+  'contacts':           'contacts',
+  'rti-stats':          'rti_stats',
+  'rti-documents':      'rti_documents',
 };
 
 const SECTION_MAP = {
@@ -113,6 +124,10 @@ const SECTION_MAP = {
   'home-social-media':  { api: HomeSocialMediaApi, cfg: HOME_SOCIAL_CFG,      title: 'Social Media' },
   'home-media-slides':  { api: HomeMediaSlideApi,  cfg: HOME_MEDIA_SLIDE_CFG, title: 'Media Showcase Slides' },
   'home-bottom-links':  { api: HomeBottomLinkApi,  cfg: HOME_BOTTOM_LINK_CFG, title: 'Bottom Links Carousel' },
+  'team-members':       { api: TeamMembersApi,     cfg: TEAM_CFG,             title: 'Our Team Members' },
+  'contacts':           { api: ContactsApi,        cfg: CONTACT_CFG,          title: 'Contact Us Items' },
+  'rti-stats':          { api: RtiStatsApi,        cfg: RTI_STATS_CFG,        title: 'RTI Statistics' },
+  'rti-documents':      { api: RtiDocumentsApi,    cfg: RTI_DOCS_CFG,         title: 'RTI Documents' },
 };
 
 // ── Overview panel ────────────────────────────────────────────────────────────
@@ -121,6 +136,7 @@ function Overview({ stats, onNavigate }) {
     { id: 'about-drdo',         icon: '📝', label: 'About DRDO',              key: 'about_drdo' },
     { id: 'tech-clusters',      icon: '✈️', label: 'Tech Clusters',            key: 'tech_clusters' },
     { id: 'corporate-clusters', icon: '🏢', label: 'Corporate Clusters',       key: 'corporate_clusters' },
+    { id: 'team-members',       icon: '👥', label: 'Team Members',              key: 'team_members' },
     { id: 'hero-slides',        icon: '🖼️', label: 'Hero Slides',              key: 'hero_slides' },
     { id: 'news-ticker',        icon: '📡', label: 'News Ticker',               key: 'news_ticker' },
     { id: 'pm-message',         icon: '💬', label: 'PM Message',               key: 'pm_message' },
@@ -149,6 +165,9 @@ function Overview({ stats, onNavigate }) {
     { id: 'onos-publishers',    icon: '📖', label: 'ONOS Publishers',           key: 'onos_publishers' },
     { id: 'faqs',               icon: '❓', label: 'FAQs',                      key: 'faqs' },
     { id: 'important-links',    icon: '🔗', label: 'Important Links',           key: 'important_links' },
+    { id: 'contacts',           icon: '📞', label: 'Contacts info',             key: 'contacts' },
+    { id: 'rti-stats',          icon: '📊', label: 'RTI Stats',                 key: 'rti_stats' },
+    { id: 'rti-documents',      icon: '📄', label: 'RTI Documents',             key: 'rti_documents' },
   ];
   return (
     <>

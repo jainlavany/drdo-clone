@@ -16,7 +16,7 @@ const {
   AboutDrdo, TechCluster, CorporateCluster,
   PMMessage, HomeMinister, HomeOffering, WhatsNew,
   HomeDocument, HomePersona, HomeSocialMedia, HomeMediaSlide, HomeBottomLink,
-  UploadedFile,
+  UploadedFile, TeamMember, Contact, RtiStat, RtiDocument,
 } = require('./models');
 
 const app = express();
@@ -180,7 +180,8 @@ app.get('/api/admin/stats', auth, async (req, res) => {
     news, press, acts, vac, hero, ticker, photos, pubs, faqs, links, ava, fm,
     schemes, indSupport, awards, products, videos, conferences, onos,
     aboutDrdo, techClusters, corporateClusters,
-    pmMsg, ministers, homeOfferings, whatsNew, homeDocs, personas, socialMedia, mediaSlides, bottomLinks
+    pmMsg, ministers, homeOfferings, whatsNew, homeDocs, personas, socialMedia, mediaSlides, bottomLinks,
+    teamMembers, contacts, rtiStats, rtiDocuments
   ] = await Promise.all([
     DrdoNews.countDocuments(), PressRelease.countDocuments(), ActsPolicy.countDocuments(),
     Vacancy.countDocuments(), HeroSlide.countDocuments(), NewsTicker.countDocuments(),
@@ -191,6 +192,7 @@ app.get('/api/admin/stats', auth, async (req, res) => {
     AboutDrdo.countDocuments(), TechCluster.countDocuments(), CorporateCluster.countDocuments(),
     PMMessage.countDocuments(), HomeMinister.countDocuments(), HomeOffering.countDocuments(), WhatsNew.countDocuments(),
     HomeDocument.countDocuments(), HomePersona.countDocuments(), HomeSocialMedia.countDocuments(), HomeMediaSlide.countDocuments(), HomeBottomLink.countDocuments(),
+    TeamMember.countDocuments(), Contact.countDocuments(), RtiStat.countDocuments(), RtiDocument.countDocuments(),
   ]);
   res.json({
     drdo_in_news: news, press_release: press, acts_policies: acts, vacancies: vac,
@@ -202,6 +204,7 @@ app.get('/api/admin/stats', auth, async (req, res) => {
     pm_message: pmMsg, home_ministers: ministers, home_offerings: homeOfferings, whats_new: whatsNew,
     home_documents: homeDocs, home_personas: personas, home_social_media: socialMedia,
     home_media_slides: mediaSlides, home_bottom_links: bottomLinks,
+    team_members: teamMembers, contacts, rti_stats: rtiStats, rti_documents: rtiDocuments,
   });
 });
 
@@ -247,6 +250,10 @@ app.use('/api/home-personas', crud(HomePersona));
 app.use('/api/home-social-media', crud(HomeSocialMedia));
 app.use('/api/home-media-slides', crud(HomeMediaSlide));
 app.use('/api/home-bottom-links', crud(HomeBottomLink));
+app.use('/api/team-members', crud(TeamMember));
+app.use('/api/contacts', crud(Contact));
+app.use('/api/rti-stats', crud(RtiStat));
+app.use('/api/rti-documents', crud(RtiDocument));
 
 app.get('/api/search', async (req, res) => {
   const query = req.query.q;
@@ -374,8 +381,16 @@ async function seedIfEmpty() {
   if ((await FAQ.countDocuments()) === 0) {
     console.log('🌱 Seeding FAQ...');
     await FAQ.insertMany([
-      { question: 'What is DRDO?', answer: 'The Defence Research and Development Organisation (DRDO) is an agency of the Republic of India, responsible for the development of technology for use by the military.', order: 1, active: true },
-      { question: 'How to apply for DRDO recruitment?', answer: 'Candidates can apply through the official DRDO recruitment portal at rac.gov.in. Applications are accepted online only.', order: 2, active: true },
+      { question: 'What is the full form of DRDO?', answer: 'Defence Research and Development Organisation.', order: 1, active: true },
+      { question: 'When was DRDO formed?', answer: 'DRDO was formed in 1958 from the amalgamation of the Technical Development Establishment (TDEs), Directorate of Technical Development & Production (DTDP) and Defence Science Organisation (DSO).', order: 2, active: true },
+      { question: 'How can I join DRDO?', answer: 'There are two primary modes of joining DRDO: RAC (Recruitment to Scientific cadre) and CEPTAM (Recruitment to Technical cadre posts).', order: 3, active: true },
+      { question: 'What are the pay scales of scientists/technical cadre staff at various levels?', answer: 'For updated pay scales please visit the RAC website.', order: 4, active: true },
+      { question: 'How can I apply for JRF/SRF/RA/Apprentice Schemes in DRDO?', answer: 'Individual DRDO laboratories publish openings for JRF/SRF/RA/Apprentices from time to time.', order: 5, active: true },
+      { question: 'What are various modes of induction of scientists into DRDO system?', answer: 'Direct Recruitment, Lateral Recruitment, Talent Search Scheme, and Deputation & Absorption.', order: 6, active: true },
+      { question: 'Can I join DRDO at a higher post with significant experience?', answer: 'Yes. Experienced candidates can join through lateral recruitment at higher grades.', order: 7, active: true },
+      { question: 'Whom should I contact for recruitment-related queries?', answer: 'Recruitment related queries may be addressed through RAC.', order: 8, active: true },
+      { question: 'Where are DRDO laboratories situated?', answer: 'DRDO laboratories are located across India including Delhi, Hyderabad, Bengaluru, Pune, Chennai, Kochi and other cities.', order: 9, active: true },
+      { question: 'What is the procedure for summer training in DRDO laboratories?', answer: 'Students should directly apply to the Director of the concerned DRDO laboratory.', order: 10, active: true }
     ]);
   }
 
@@ -974,6 +989,68 @@ async function seedIfEmpty() {
       { imageUrl: '', link: 'https://pib.gov.in/', order: 5 },
       { imageUrl: '', link: 'https://wcd.nic.in/bbbp-schemes/', order: 6 },
       { imageUrl: '', link: 'https://www.digitalindia.gov.in/', order: 7 },
+    ]);
+  }
+
+  // 32. TeamMember
+  if ((await TeamMember.countDocuments()) === 0) {
+    console.log('🌱 Seeding TeamMember...');
+    await TeamMember.insertMany([
+      { name: "Dr. B K Das", designation: "Distinguished Scientist & Director General", category: "Technical", cluster: "Electronics and Communication Systems", order: 1 },
+      { name: "Sh. Ummalaneni Raja Babu", designation: "Distinguished Scientist & Director General", category: "Technical", cluster: "Missiles and Strategic Systems", order: 2 },
+      { name: "Dr. Upendra Kumar Singh", designation: "Distinguished Scientist & Director General", category: "Technical", cluster: "Soldier Support System", order: 3 },
+      { name: "Dr. K Rajalakshmi Menon", designation: "Distinguished Scientist & Director General", category: "Technical", cluster: "Aeronautical Systems", order: 4 },
+      { name: "Sh. RVH Prasad", designation: "Distinguished Scientist & Director General", category: "Technical", cluster: "Naval Systems and Materials", order: 5 },
+      { name: "Sh. Prateek Kishore", designation: "Distinguished Scientist & Director General", category: "Technical", cluster: "Armament & Combat Engineering Systems", order: 6 },
+      { name: "Ms Sheena Rani R", designation: "Distinguished Scientist & Director General", category: "Technical", cluster: "Micro Electronic Devices, Computational Systems & Cyber Security", order: 7 },
+      { name: "Sh. Mangal Lal Chand", designation: "Distinguished Scientist & Director General", category: "Corporate", cluster: "Technology Management", order: 8 },
+      { name: "Dr. (Smt) Chandrika Kaushik", designation: "Distinguished Scientist & Director General", category: "Corporate", cluster: "Production Coordination & Services Interaction", order: 9 },
+      { name: "Dr. Mayank Dwivedi", designation: "Outstanding Scientist & Director General", category: "Corporate", cluster: "Human Resources", order: 10 },
+      { name: "Dr. Jaiteerth R. Joshi", designation: "Outstanding Scientist & Director General", category: "Corporate", cluster: "BrahMos", order: 11 },
+      { name: "Dr. Ravindra Singh", designation: "Outstanding Scientist & Director General", category: "Corporate", cluster: "Resource & Management", order: 12 },
+      { name: "Dr. Sanjai K Dwivedi", designation: "Scientist 'G' & Director", category: "Nodal", cluster: "-", order: 13 }
+    ]);
+  }
+
+  // 33. Contact
+  if ((await Contact.countDocuments()) === 0) {
+    console.log('🌱 Seeding Contact...');
+    await Contact.insertMany([
+      { label: "1. DIIQM : For Queries Pertaining - Transfer of Technology (ToT), Product for Industry, Products for Export, Industry Interaction Group, Test facilities and Industry Support", org: "Directorate of Industry Interface & Quality Management (DIIQM)", phone: "011 - 23013209, 23015291", email: "director-diiqm-hqr@gov.in", order: 1 },
+      { label: "2. DFTM : For Queries Pertaining - Advanced Technology Centres", org: "Directorate of Futuristic Technology Management (DFTM)", phone: "011 - 23007794", email: "", order: 2 },
+      { label: "3. ER&IPR : For Queries Pertaining - Academia", org: "Directorate of Extramural Research & Intellectual Property Rights", phone: "011 - 23017661", email: "erip_er.hqr@gov.in", order: 3 },
+      { label: "4. TDF : For Queries Pertaining - Technology Development Fund", org: "Technology Development Fund", phone: "011 - 23007325", email: "", order: 4 },
+      { label: "5. RTI Cell : For Queries Pertaining - Right to Information Act", org: "RTI Cell, DRDO HQ", phone: "011 - 23015433", email: "", order: 5 },
+      { label: "6. CEPTAM : For Queries Pertaining - Recruitment & Assessment of Technical Cadre", org: "Centre for Personnel Talent Management", phone: "011 - 23882323", email: "", order: 6 },
+      { label: "7. RAC : For Queries Pertaining - Recruitment & Assessment of Scientific Cadre", org: "Recruitment and Assessment Centre", phone: "011 - 23817833", email: "director.rac@gov.in", order: 7 },
+      { label: "8. DPI : For Queries Pertaining - Public Relations & Social Media", org: "Directorate of Public Interface", phone: "011 - 23011073", email: "dpidrdo.hqr@gov.in", order: 8 },
+      { label: "9. DESIDOC : For Queries Pertaining - DRDO Website", org: "Defence Scientific Information & Documentation Centre", phone: "011 - 23812252", email: "director.desidoc@gov.in", order: 9 },
+      { label: "10. DTTC : For Queries Pertaining - Testing, Consultation & Incubation", org: "Defence Technology & Test Centre", phone: "0522-2317619", email: "dttc-drdo@gov.in", order: 10 },
+      { label: "11. DRDO HQ : Headquarters Contact Information", org: "Defence Research and Development Organisation", phone: "", email: "", order: 11 }
+    ]);
+  }
+
+  // 34. RtiStat
+  if ((await RtiStat.countDocuments()) === 0) {
+    console.log('🌱 Seeding RtiStat...');
+    await RtiStat.insertMany([
+      { title: "RTI Applications", label1: "Received", value1: "579", label2: "Disposed", value2: "565", order: 1 },
+      { title: "RTI First Appeals", label1: "Received", value1: "54", label2: "Orders Issued", value2: "54", order: 2 },
+      { title: "RTI Second Appeals", label1: "Received", value1: "66", label2: "Disposed", value2: "66", order: 3 },
+      { title: "Parliament Questions", label1: "Questions Asked", value1: "242", label2: "Replies Given", value2: "206", order: 4 }
+    ]);
+  }
+
+  // 35. RtiDocument
+  if ((await RtiDocument.countDocuments()) === 0) {
+    console.log('🌱 Seeding RtiDocument...');
+    await RtiDocument.insertMany([
+      { title: "Public Authorities under DRDO", description: "List of Public Information Officers & Appellate Authorities at DRDO HQs", link: "https://drdo.gov.in/drdo/sites/default/files/Basic-PDF/Public_Authorities_under_DRDO_12_06_2026.pdf", order: 1 },
+      { title: "RTI Officials at DRDO HQ", description: "List of PIOs & First Appellate Authorities at DRDO HQs", link: "https://drdo.gov.in/drdo/sites/default/files/Basic-PDF/RTI_Officials_at_DRDO_HQ_12_06_2026.pdf", order: 2 },
+      { title: "RTI Act 2005 (English & Hindi)", description: "Right to Information Act, 2005", link: "https://drdo.gov.in/drdo/sites/default/files/Basic-PDF/RTI_Act_2005_12_06_2026.pdf", order: 3 },
+      { title: "How to Submit RTI Form & Fee", description: "Guidelines for RTI submission and fee payment", link: "https://drdo.gov.in/drdo/sites/default/files/Basic-PDF/How_to_Submit_RTI_Form_Fee_12_06_2026.pdf", order: 4 },
+      { title: "Exemption under RTI Act 2005", description: "RTI exemptions applicable to DRDO", link: "https://drdo.gov.in/drdo/sites/default/files/Basic-PDF/Exemption_under_RTI_Act_2005_12_06_2026.pdf", order: 5 },
+      { title: "Guidelines for Information Seekers", description: "Information seeker guidelines", link: "https://drdo.gov.in/drdo/sites/default/files/Basic-PDF/Guidelines_for_Information_Seeders_12_06_2026.pdf", order: 6 }
     ]);
   }
 

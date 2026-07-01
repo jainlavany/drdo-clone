@@ -531,3 +531,82 @@ export const HOME_BOTTOM_LINK_CFG = {
     <td>{link(item.imageUrl)}</td>
   </>),
 };
+
+// ── Our Team Members ────────────────────────────────────────────────────────
+export const TEAM_CFG = {
+  fields: [
+    { key: 'name',        label: 'Name', placeholder: 'Dr. B K Das' },
+    { key: 'designation', label: 'Designation', placeholder: 'Distinguished Scientist & Director General' },
+    { key: 'category',    label: 'Category', type: 'select', options: ['Technical', 'Corporate', 'Nodal'], rowStart: true },
+    { key: 'cluster',     label: 'Cluster / Directorate', placeholder: 'Electronics and Communication Systems (or - if Nodal)', rowEnd: true },
+    { key: 'order',       label: 'Display Order', type: 'number', placeholder: '1' },
+  ],
+  colHeaders: ['Name', 'Designation', 'Category', 'Cluster', 'Order'],
+  emptyRow:   { name: '', designation: '', category: 'Technical', cluster: '', order: 0 },
+  renderRow:  item => (<>
+    <td><strong>{item.name}</strong></td>
+    <td>{item.designation}</td>
+    <td>{badge(item.category, item.category === 'Technical' ? 'adm-badge-blue' : item.category === 'Corporate' ? 'adm-badge-teal' : 'adm-badge-orange')}</td>
+    <td>{item.cluster || '—'}</td>
+    <td style={{ color: '#6b7280', textAlign: 'center' }}>{item.order}</td>
+  </>),
+};
+
+// ── Contact Us Items ─────────────────────────────────────────────────────────
+export const CONTACT_CFG = {
+  fields: [
+    { key: 'label', label: 'Accordion Label / Query Description', type: 'textarea', placeholder: '1. DIIQM : For Queries Pertaining - Transfer of Technology...' },
+    { key: 'org',   label: 'Organisation Name', placeholder: 'Directorate of Industry Interface & Quality Management (DIIQM)' },
+    { key: 'phone', label: 'Phone Number(s)', placeholder: '011 - 23013209', rowStart: true },
+    { key: 'email', label: 'Email Address(es)', placeholder: 'director-diiqm-hqr@gov.in', rowEnd: true },
+    { key: 'order', label: 'Display Order', type: 'number', placeholder: '1' },
+  ],
+  colHeaders: ['Label Description', 'Organisation', 'Phone', 'Email', 'Order'],
+  emptyRow:   { label: '', org: '', phone: '', email: '', order: 0 },
+  renderRow:  item => (<>
+    <td className="trunc">{trunc(item.label, 50)}</td>
+    <td><strong>{item.org}</strong></td>
+    <td style={{ color: '#6b7280', fontSize: '0.8rem' }}>{item.phone || '—'}</td>
+    <td style={{ color: '#6b7280', fontSize: '0.8rem' }}>{item.email || '—'}</td>
+    <td style={{ color: '#6b7280', textAlign: 'center' }}>{item.order}</td>
+  </>),
+};
+
+// ── RTI Statistics ───────────────────────────────────────────────────────────
+export const RTI_STATS_CFG = {
+  fields: [
+    { key: 'title',  label: 'Card Title / Category', placeholder: 'RTI Applications' },
+    { key: 'label1', label: 'Row 1 Label', placeholder: 'Received', rowStart: true },
+    { key: 'value1', label: 'Row 1 Value', placeholder: '579', rowEnd: true },
+    { key: 'label2', label: 'Row 2 Label', placeholder: 'Disposed / Orders Issued', rowStart: true },
+    { key: 'value2', label: 'Row 2 Value', placeholder: '565', rowEnd: true },
+    { key: 'order',  label: 'Display Order', type: 'number', placeholder: '1' },
+  ],
+  colHeaders: ['Category', 'Row 1 (Label: Val)', 'Row 2 (Label: Val)', 'Order'],
+  emptyRow:   { title: '', label1: 'Received', value1: '0', label2: 'Disposed', value2: '0', order: 0 },
+  renderRow:  item => (<>
+    <td><strong>{item.title}</strong></td>
+    <td style={{ fontSize: '0.8rem' }}>{item.label1}: <span style={{ color: '#1e4e8c', fontWeight: 'bold' }}>{item.value1}</span></td>
+    <td style={{ fontSize: '0.8rem' }}>{item.label2}: <span style={{ color: '#1e4e8c', fontWeight: 'bold' }}>{item.value2}</span></td>
+    <td style={{ color: '#6b7280', textAlign: 'center' }}>{item.order}</td>
+  </>),
+};
+
+// ── RTI Documents ────────────────────────────────────────────────────────────
+export const RTI_DOCS_CFG = {
+  fields: [
+    { key: 'title',       label: 'Document Title', placeholder: 'RTI Officials at DRDO HQ' },
+    { key: 'description', label: 'Description', type: 'textarea', placeholder: 'List of PIOs & First Appellate Authorities...' },
+    { key: 'link',        label: 'External Link / PDF URL', type: 'url', placeholder: 'https://…' },
+    { key: 'fileUrl',     label: 'Upload PDF File', type: 'pdf' },
+    { key: 'order',       label: 'Display Order', type: 'number', placeholder: '1' },
+  ],
+  colHeaders: ['Title', 'Description', 'Link', 'Order'],
+  emptyRow:   { title: '', description: '', link: '', fileUrl: '', order: 0 },
+  renderRow:  item => (<>
+    <td><strong>{item.title}</strong></td>
+    <td className="trunc" style={{ color: '#6b7280' }}>{trunc(item.description, 50)}</td>
+    <td>{link(item.fileUrl || item.link)}</td>
+    <td style={{ color: '#6b7280', textAlign: 'center' }}>{item.order}</td>
+  </>),
+};
