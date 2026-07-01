@@ -1,28 +1,8 @@
 import { useTranslation } from 'react-i18next';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
 import './PhotoGalleryPage.css';
-
-
-const ALL_ENTRIES = [
-  { id: 'mar-apr-2026', title: 'Photo Gallery: March and April 2026', dateStr: '13/04/2026', dateVal: 20260413, items: 5 },
-  { id: 'jan-feb-2026', title: 'Photo Gallery: January and February 2026', dateStr: '19/02/2026', dateVal: 20260219, items: 8 },
-  { id: 'nov-dec-2025', title: 'Photo Gallery: November and December 2025', dateStr: '08/12/2025', dateVal: 20251208, items: 4 },
-  { id: 'sep-oct-2025', title: 'Photo Gallery: September and October 2025', dateStr: '31/10/2025', dateVal: 20251031, items: 5 },
-  { id: 'aug-2025', title: 'Photo Gallery: August 2025', dateStr: '01/08/2025', dateVal: 20250801, items: 3 },
-  { id: 'jun-jul-2025', title: 'Photo Gallery: June and July 2025', dateStr: '14/07/2025', dateVal: 20250714, items: 2 },
-  { id: 'may-2025', title: 'Photo Gallery: May 2025', dateStr: '01/05/2025', dateVal: 20250501, items: 3 },
-  { id: 'mar-apr-2025', title: 'Photo Gallery: March and April 2025', dateStr: '08/04/2025', dateVal: 20250408, items: 13 },
-  { id: 'jan-feb-2025', title: 'Photo Gallery: January and February 2025', dateStr: '25/02/2025', dateVal: 20250225, items: 10 },
-  { id: 'nov-dec-2024', title: 'Photo Gallery: November and December 2024', dateStr: '05/12/2024', dateVal: 20241205, items: 5 },
-  { id: 'sep-oct-2024', title: 'Photo Gallery: September and October 2024', dateStr: '30/10/2024', dateVal: 20241030, items: 7 },
-  { id: 'jul-aug-2024', title: 'Photo Gallery: July and August 2024', dateStr: '28/08/2024', dateVal: 20240828, items: 6 },
-  { id: 'may-jun-2024', title: 'Photo Gallery: May and June 2024', dateStr: '20/06/2024', dateVal: 20240620, items: 4 },
-  { id: 'mar-apr-2024', title: 'Photo Gallery: March and April 2024', dateStr: '12/04/2024', dateVal: 20240412, items: 8 },
-  { id: 'jan-feb-2024', title: 'Photo Gallery: January and February 2024', dateStr: '20/02/2024', dateVal: 20240220, items: 5 },
-];
-
 
 function ImagePlaceholder() {
   return (
@@ -47,24 +27,55 @@ const PER_PAGE_OPTIONS = [
 export default function PhotoGalleryPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [photos, setPhotos] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('latest');
   const [perPage, setPerPage] = useState(10);
 
+  useEffect(() => {
+    fetch(`${window.SERVER_BASE_URL || 'http://localhost:4000'}/api/photos`)
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setPhotos(data);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Error fetching photos:', err);
+        setLoading(false);
+      });
+  }, []);
+
+  const getImgSrc = (url) => {
+    if (!url) return '';
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+    const base = window.SERVER_BASE_URL || 'http://localhost:4000';
+    return `${base}${url}`;
+  };
+
+  const parseDateVal = (dStr) => {
+    if (!dStr) return 0;
+    const parts = dStr.split('/');
+    if (parts.length === 3) {
+      return parseInt(parts[2] + parts[1] + parts[0]); // DD/MM/YYYY -> YYYYMMDD
+    }
+    return 0;
+  };
 
   const filtered = useMemo(() => {
-    let list = ALL_ENTRIES.filter(e =>
-      e.title.toLowerCase().includes(search.toLowerCase())
+    let list = photos.filter(e =>
+      e.caption ? e.caption.toLowerCase().includes(search.toLowerCase()) : false
     );
     if (sortBy === 'oldest') {
-      list = [...list].sort((a, b) => a.dateVal - b.dateVal);
+      list = [...list].sort((a, b) => parseDateVal(a.date) - parseDateVal(b.date));
     } else {
-
-      list = [...list].sort((a, b) => b.dateVal - a.dateVal);
+      list = [...list].sort((a, b) => parseDateVal(b.date) - parseDateVal(a.date));
     }
     return list;
-  }, [search, sortBy]);
+  }, [photos, search, sortBy]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / perPage));
   const safePage = Math.min(page, totalPages);
@@ -89,7 +100,6 @@ export default function PhotoGalleryPage() {
   return (
     <>
       <div className="connect-page-wrapper">
-
         <div className="connect-hero">
           <div className="connect-hero-content">
             <div className="connect-breadcrumb-mini">
@@ -136,11 +146,8 @@ export default function PhotoGalleryPage() {
           </Link>
         </div>
 
-
         <div className="pg-toolbar-border">
           <div className="pg-toolbar">
-
-
             <div className="pg-search-wrap">
               <svg className="pg-search-icon" xmlns="http://www.w3.org/2000/svg"
                 width="15" height="15" viewBox="0 0 24 24" fill="none"
@@ -158,10 +165,7 @@ export default function PhotoGalleryPage() {
               />
             </div>
 
-
             <div className="pg-toolbar-right">
-
-
               <div className="pg-select-wrap">
                 <svg className="pg-select-icon" xmlns="http://www.w3.org/2000/svg"
                   width="15" height="15" viewBox="0 0 24 24" fill="none"
@@ -181,7 +185,6 @@ export default function PhotoGalleryPage() {
                   <option value="oldest">{t("Oldest")}</option>
                 </select>
               </div>
-
 
               <div className="pg-select-wrap">
                 <svg className="pg-select-icon" xmlns="http://www.w3.org/2000/svg"
@@ -203,48 +206,61 @@ export default function PhotoGalleryPage() {
                   ))}
                 </select>
               </div>
-
             </div>
-
           </div>
         </div>
 
-
         <div className="pg-layout">
           <main className="pg-main-content">
+            {loading ? (
+              <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
+                {t("Loading photos...")}
+              </div>
+            ) : (
+              <div className="pg-grid">
+                {entries.map((entry) => {
+                  const targetLink = entry.link && entry.link !== '#' ? entry.link : undefined;
+                  return (
+                    <a
+                      key={entry._id}
+                      href={targetLink || "#"}
+                      onClick={targetLink ? undefined : (e) => e.preventDefault()}
+                      className="pg-card"
+                      target={targetLink ? "_blank" : undefined}
+                      rel={targetLink ? "noopener noreferrer" : undefined}
+                      id={`gallery-${entry._id}`}
+                    >
+                      <div className="pg-thumb">
+                        {entry.imageUrl ? (
+                          <img 
+                            src={getImgSrc(entry.imageUrl)} 
+                            alt={entry.caption} 
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                          />
+                        ) : (
+                          <ImagePlaceholder />
+                        )}
+                        <span className="pg-card-arrow">›</span>
+                      </div>
 
-            <div className="pg-grid">
-              {entries.map((entry) => (
-
-                <a
-                  key={entry.id}
-                  href="#"
-                  className="pg-card"
-                  id={`gallery-${entry.id}`}
-                >
-                  <div className="pg-thumb">
-
-                    <ImagePlaceholder />
-                    <span className="pg-card-arrow">›</span>
-                  </div>
-
-                  <div className="pg-card-body">
-                    <div className="pg-card-title">{t(entry.title)}</div>
-                    <div className="pg-card-meta">
-                      <span className="pg-card-date">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
-                          viewBox="0 0 24 24" fill="#888">
-                          <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z" />
-                        </svg>
-                        {entry.dateStr}
-                      </span>
-                      <span className="pg-card-count">{entry.items} ITEMS</span>
-                    </div>
-                  </div>
-                </a>
-              ))}
-            </div>
-
+                      <div className="pg-card-body">
+                        <div className="pg-card-title">{t(entry.caption)}</div>
+                        <div className="pg-card-meta">
+                          <span className="pg-card-date">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
+                              viewBox="0 0 24 24" fill="#888">
+                              <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z" />
+                            </svg>
+                            {entry.date}
+                          </span>
+                          <span className="pg-card-count">{t(entry.category || 'General')}</span>
+                        </div>
+                      </div>
+                    </a>
+                  );
+                })}
+              </div>
+            )}
 
             {totalPages > 1 && (
               <div className="pg-pagination">
@@ -290,7 +306,6 @@ export default function PhotoGalleryPage() {
               </div>
             )}
 
-
             <div className="pg-last-updated">
               <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13"
                 viewBox="0 0 24 24" fill="#888" aria-hidden="true">
@@ -299,18 +314,14 @@ export default function PhotoGalleryPage() {
               Last Updated: 13 Apr 2026
             </div>
 
-
             <div className="connect-back-row">
               <button onClick={() => navigate(-1)} className="connect-back-btn" id="onos-back-btn">
                 {t('← BACK TO PREVIOUS PAGE')}
               </button>
             </div>
-
           </main>
         </div>
-
       </div>
-
       <Footer />
     </>
   );

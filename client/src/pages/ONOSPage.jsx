@@ -70,7 +70,7 @@ export default function ONOSPage() {
     fetch(`${window.SERVER_BASE_URL || 'http://localhost:4000'}/api/onos-publishers`)
       .then(res => res.json())
       .then(data => {
-        if (data && data.length > 0) {
+        if (Array.isArray(data)) {
           const sorted = data.sort((a, b) => (a.order || 0) - (b.order || 0));
           setPubList(sorted);
         }

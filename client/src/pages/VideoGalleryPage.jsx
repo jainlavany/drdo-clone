@@ -83,7 +83,7 @@ export default function VideoGalleryPage() {
     fetch(`${window.SERVER_BASE_URL || 'http://localhost:4000'}/api/videos`)
       .then(res => res.json())
       .then(data => {
-        if (data && data.length > 0) {
+        if (Array.isArray(data)) {
           setVideos(data);
         }
       })

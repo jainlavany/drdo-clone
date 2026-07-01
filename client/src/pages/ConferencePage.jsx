@@ -1,28 +1,9 @@
 import { useTranslation } from 'react-i18next';
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaArchive } from "react-icons/fa";
 import Footer from "../components/Footer";
 import "./ConferencePage.css";
-
-const conferences = [
-  {
-    id: 1,
-    title:
-      "DRDO is going to organise Unmesh-2027 Fourth All India Technical Rajbhasha Conference on Dated 10-11 January 2027",
-    startDate: "14/05/2026",
-    endDate: "11/01/2027",
-    link: "https://drdo.gov.in/drdo/en/announcement/drdo-going-organise-unmesh-2027-fourth-all-india-technical-rajbhasha-conference-dated",
-  },
-  {
-    id: 2,
-    title:
-      "International Conference on Autonomous Aerial Vehicles ICAAV - 2026 On 20-21 Aug 2026 Jointly Organized by ADE-DRDO and Design Division-AeSI",
-    startDate: "25/03/2026",
-    endDate: "21/08/2026",
-    link: "https://www.ddaesi.in/icaav-2026",
-  },
-];
 
 const PER_PAGE_OPTIONS = [
   { label: "10 per page", value: 10 },
@@ -33,14 +14,31 @@ const PER_PAGE_OPTIONS = [
 export default function ConferencePage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [confs, setConfs] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [perPage, setPerPage] = useState(10);
 
+  useEffect(() => {
+    fetch(`${window.SERVER_BASE_URL || 'http://localhost:4000'}/api/conferences`)
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setConfs(data);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Error fetching conferences:', err);
+        setLoading(false);
+      });
+  }, []);
+
   const filtered = useMemo(() =>
-    conferences.filter((item) =>
-      item.title.toLowerCase().includes(search.toLowerCase())
+    confs.filter((item) =>
+      item.title ? item.title.toLowerCase().includes(search.toLowerCase()) : false
     ),
-    [search]
+    [confs, search]
   );
 
   const rows = filtered.slice(0, perPage);
@@ -48,7 +46,6 @@ export default function ConferencePage() {
   return (
     <>
       <div className="connect-page-wrapper">
-
         <div className="connect-hero">
           <div className="connect-hero-content">
             <div className="connect-breadcrumb-mini">
@@ -95,11 +92,8 @@ export default function ConferencePage() {
           </Link>
         </div>
 
-
         <div className="cp-toolbar-border">
           <div className="cp-toolbar">
-
-
             <div className="cp-search-wrap">
               <svg
                 className="cp-search-icon"
@@ -122,7 +116,6 @@ export default function ConferencePage() {
                 id="conf-search"
               />
             </div>
-
 
             <div className="cp-toolbar-right">
               <div className="cp-select-wrap">
@@ -152,49 +145,58 @@ export default function ConferencePage() {
                 </select>
               </div>
             </div>
-
           </div>
         </div>
 
-
         <div className="cp-layout">
-
-
-          <div className="cp-table-wrapper">
-            <table className="cp-table">
-              <thead>
-                <tr>
-                  <th className="cp-col-sno">{t("S.NO")}</th>
-                  <th className="cp-col-title">TITLE</th>
-                  <th className="cp-col-date">{t("START DATE")}</th>
-                  <th className="cp-col-date">{t("END DATE")}</th>
-                  <th className="cp-col-view">{t("LINK TO CONTENT")}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((item, index) => (
-                  <tr key={item.id}>
-                    <td>{index + 1}</td>
-                    <td className="cp-table-title">{t(item.title)}</td>
-                    <td className="cp-date-cell">{item.startDate}</td>
-                    <td className="cp-date-cell">{item.endDate}</td>
-                    <td style={{ textAlign: "center" }}>
-                      <a
-                        href={item.link}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="cp-view-btn"
-                        id={`conf-view-${item.id}`}
-                      >
-                        {t("👁 View")}
-                      </a>
-                    </td>
+          {loading ? (
+            <div style={{ textAlign: "center", padding: "40px", color: "#666" }}>
+              {t("Loading conferences...")}
+            </div>
+          ) : (
+            <div className="cp-table-wrapper">
+              <table className="cp-table">
+                <thead>
+                  <tr>
+                    <th className="cp-col-sno">{t("S.NO")}</th>
+                    <th className="cp-col-title">TITLE</th>
+                    <th className="cp-col-date">{t("START DATE")}</th>
+                    <th className="cp-col-date">{t("END DATE")}</th>
+                    <th className="cp-col-view">{t("LINK TO CONTENT")}</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
+                </thead>
+                <tbody>
+                  {rows.length > 0 ? (
+                    rows.map((item, index) => (
+                      <tr key={item._id}>
+                        <td>{index + 1}</td>
+                        <td className="cp-table-title">{t(item.title)}</td>
+                        <td className="cp-date-cell">{item.startDate}</td>
+                        <td className="cp-date-cell">{item.endDate}</td>
+                        <td style={{ textAlign: "center" }}>
+                          <a
+                            href={item.link}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="cp-view-btn"
+                            id={`conf-view-${item._id}`}
+                          >
+                            {t("👁 View")}
+                          </a>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="5" style={{ textAlign: "center", padding: "24px", color: "#666" }}>
+                        {t("No conferences found.")}
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
 
           <div className="cp-bottom-actions">
             <a
@@ -209,7 +211,6 @@ export default function ConferencePage() {
             </a>
           </div>
 
-
           <div className="cp-last-updated">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -223,17 +224,13 @@ export default function ConferencePage() {
             Last Updated: 25 Mar 2026
           </div>
 
-
           <div className="connect-back-row">
             <button onClick={() => navigate(-1)} className="connect-back-btn" id="onos-back-btn">
               {t('← BACK TO PREVIOUS PAGE')}
             </button>
           </div>
-
         </div>
-
       </div>
-
       <Footer />
     </>
   );
