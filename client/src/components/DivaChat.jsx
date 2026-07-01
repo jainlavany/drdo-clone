@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { FaHeadset } from 'react-icons/fa';
 import './DivaChat.css';
 
 export default function DivaChat() {
@@ -80,21 +81,7 @@ export default function DivaChat() {
         {isOpen ? (
           <span className="diva-close-icon">✕</span>
         ) : (
-          <svg className="diva-headset-girl-svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            {/* Hair / Head outline */}
-            <path d="M12 2C7.58 2 4 5.58 4 10c0 2.22.9 4.22 2.37 5.67" />
-            <path d="M17.63 15.67C19.1 14.22 20 12.22 20 10c0-4.42-3.58-8-8-8z" />
-            <path d="M9 11a3 3 0 0 0 6 0" />
-            {/* Headphones */}
-            <rect x="2" y="9" width="3" height="4" rx="1.5" fill="currentColor" />
-            <rect x="19" y="9" width="3" height="4" rx="1.5" fill="currentColor" />
-            <path d="M4 9a8 8 0 0 1 16 0" />
-            {/* Mic */}
-            <path d="M19 13v2a3 3 0 0 1-3 3h-2" />
-            <circle cx="13" cy="18" r="1" fill="currentColor" />
-            {/* Shoulders */}
-            <path d="M6 21v-1a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v1" />
-          </svg>
+          <FaHeadset className="diva-launcher-icon" />
         )}
       </button>
 
