@@ -177,27 +177,15 @@ function Overview({ stats, onNavigate }) {
     { id: 'onos-contacts',      icon: '📞', label: 'ONOS Contacts',             key: 'onos_contacts' },
   ];
   return (
-    <>
-      <div className="adm-stats">
-        {cards.map(c => (
-          <div key={c.id} className="adm-stat" onClick={() => onNavigate(c.id)}>
-            <div className="adm-stat-icon">{c.icon}</div>
-            <div className="adm-stat-num">{stats ? (stats[c.key] ?? 0) : '…'}</div>
-            <div className="adm-stat-label">{c.label}</div>
-          </div>
-        ))}
-      </div>
-      <div className="adm-guide">
-        <h3>Quick Guide</h3>
-        <ul>
-          <li>Click any stat card above to jump to that section.</li>
-          <li>Use <strong>+ Add New</strong> to create new entries in each section.</li>
-          <li>You can attach <strong>external links</strong>, <strong>upload PDF files</strong>, and <strong>upload images</strong> to most entries.</li>
-          <li>Use the <strong>Edit</strong> button to modify any existing entry.</li>
-          <li>Changes are saved instantly to MongoDB.</li>
-        </ul>
-      </div>
-    </>
+    <div className="adm-stats">
+      {cards.map(c => (
+        <div key={c.id} className="adm-stat" onClick={() => onNavigate(c.id)}>
+          <div className="adm-stat-icon">{c.icon}</div>
+          <div className="adm-stat-num">{stats ? (stats[c.key] ?? 0) : '…'}</div>
+          <div className="adm-stat-label">{c.label}</div>
+        </div>
+      ))}
+    </div>
   );
 }
 
