@@ -411,3 +411,81 @@ body.accessibility-line-height,
 body.accessibility-line-height * {
   line-height: 1.8 !important;
 }
+
+/* ==========================================================================
+   📱 Mobile Responsiveness Overrides
+   ========================================================================== */
+
+@media (max-width: 900px) {
+  /* Prevent sticky header from taking up the entire screen height on mobile */
+  .site-header {
+    position: relative !important;
+  }
+  
+  /* Fix hamburger menu layout to expand list vertically underneath the toggle button */
+  .nav-inner {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  
+  .hamburger {
+    align-self: flex-start !important;
+    margin: 10px 16px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Hero Slider: Scale height proportionally based on width to prevent text cropping */
+  .hero-slider {
+    height: auto !important;
+    aspect-ratio: 3 / 1 !important;
+  }
+  
+  /* Adjust caption size and wrap text so it doesn't overflow screen width */
+  .slide-caption {
+    bottom: 8px !important;
+    left: 5% !important;
+    transform: none !important;
+    width: 90% !important;
+    white-space: normal !important;
+    font-size: 10px !important;
+    padding: 4px 8px !important;
+    text-align: center !important;
+  }
+  
+  /* Hide pause button and indicators on mobile to keep the layout clean */
+  .slider-indicators,
+  .slider-pause {
+    display: none !important;
+  }
+  
+  /* Shrink navigation arrows */
+  .slider-arrow {
+    width: 24px !important;
+    height: 24px !important;
+    font-size: 14px !important;
+  }
+
+  /* Make minister images fill their card width on mobile */
+  .minister-image-wrapper {
+    width: 100% !important;
+    max-width: 260px !important;
+  }
+
+  /* Force tables to scroll horizontally instead of overflowing their container cards */
+  .dn-table-wrapper,
+  .cp-table-wrapper,
+  .pub-table-wrapper,
+  .onos-table-wrapper,
+  .pr-table-wrapper,
+  .fm-table-wrapper,
+  .rti-table-wrapper,
+  .aw-table-wrapper,
+  .ap-table-wrapper,
+  .team-table-responsive {
+    overflow-x: auto !important;
+    display: block !important;
+    width: 100% !important;
+    -webkit-overflow-scrolling: touch;
+  }
+}
