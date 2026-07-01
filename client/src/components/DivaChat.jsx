@@ -5,10 +5,11 @@ import './DivaChat.css';
 export default function DivaChat() {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
+  const [isMaximized, setIsMaximized] = useState(false);
   const [messages, setMessages] = useState([
     {
       sender: 'bot',
-      text: "Hello! I am DIVA (DRDO Intelligent Virtual Assistant). How can I assist you with the portal today?"
+      text: "Hi! I am DIVA (DRDO Intelligent Virtual Assistant), how can I help you?"
     }
   ]);
   const [input, setInput] = useState('');
@@ -36,7 +37,7 @@ export default function DivaChat() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: userMessage,
-          history: messages.slice(1) // Omit the initial welcome greeting from context
+          history: messages // Pass the current history
         })
       });
 
@@ -61,35 +62,72 @@ export default function DivaChat() {
     }
   };
 
+  const handleClear = () => {
+    setMessages([]);
+  };
+
   return (
     <div className="diva-wrapper">
-      {/* Floating Action Button Bubble */}
+      {/* Floating Action Button Bubble: Girl with headset & mic SVG */}
       <button 
         className={`diva-bubble-btn ${isOpen ? 'active' : ''}`} 
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => {
+          setIsOpen(!isOpen);
+          if (isOpen) setIsMaximized(false); // Reset maximized state on close
+        }}
         aria-label="Toggle Assistant"
       >
         {isOpen ? (
           <span className="diva-close-icon">✕</span>
         ) : (
-          <span className="diva-bot-icon">🤖</span>
+          <svg className="diva-headset-girl-svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            {/* Hair / Head outline */}
+            <path d="M12 2C7.58 2 4 5.58 4 10c0 2.22.9 4.22 2.37 5.67" />
+            <path d="M17.63 15.67C19.1 14.22 20 12.22 20 10c0-4.42-3.58-8-8-8z" />
+            <path d="M9 11a3 3 0 0 0 6 0" />
+            {/* Headphones */}
+            <rect x="2" y="9" width="3" height="4" rx="1.5" fill="currentColor" />
+            <rect x="19" y="9" width="3" height="4" rx="1.5" fill="currentColor" />
+            <path d="M4 9a8 8 0 0 1 16 0" />
+            {/* Mic */}
+            <path d="M19 13v2a3 3 0 0 1-3 3h-2" />
+            <circle cx="13" cy="18" r="1" fill="currentColor" />
+            {/* Shoulders */}
+            <path d="M6 21v-1a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v1" />
+          </svg>
         )}
       </button>
 
       {/* Chat Pane */}
       {isOpen && (
-        <div className="diva-chat-box">
+        <div className={`diva-chat-box ${isMaximized ? 'maximized' : ''}`}>
           <div className="diva-chat-header">
             <div className="diva-header-info">
-              <span className="diva-header-icon">🛡️</span>
+              {/* Uses the robot emoji 🤖 in the header as requested */}
+              <span className="diva-header-icon">🤖</span>
               <div>
                 <h4>DIVA</h4>
-                <small>DRDO Intelligent Assistant</small>
+                <small>DRDO Intelligent Virtual Assistant</small>
               </div>
             </div>
-            <button className="diva-clear-btn" onClick={() => setMessages([
-              { sender: 'bot', text: "Chat history cleared. How can I help you?" }
-            ])} title="Clear Chat">🔄</button>
+            <div className="diva-header-actions">
+              {/* Maximize / Minimize toggle */}
+              <button 
+                className="diva-action-btn" 
+                onClick={() => setIsMaximized(!isMaximized)} 
+                title={isMaximized ? "Minimize Window" : "Maximize Window"}
+              >
+                {isMaximized ? '🗗' : '⛶'}
+              </button>
+              {/* Clear chat history button */}
+              <button 
+                className="diva-action-btn" 
+                onClick={handleClear} 
+                title="Clear Chat History"
+              >
+                🗑️
+              </button>
+            </div>
           </div>
 
           <div className="diva-chat-body">
