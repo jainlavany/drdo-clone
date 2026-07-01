@@ -336,16 +336,27 @@ app.post('/api/chat', async (req, res) => {
 
     const genAI = new GoogleGenerativeAI(apiKey);
 
-    // RAG: Query matching details from FAQs, Products, and Schemes 
+    // Always load About DRDO to give the assistant context on what DRDO is
+    const aboutDoc = await AboutDrdo.findOne();
+    let aboutSnippet = '';
+    if (aboutDoc) {
+      aboutSnippet = `About DRDO Vision: ${aboutDoc.vision || ''}\nMission: ${(aboutDoc.mission || []).join(', ')}\nAbout DRDO: ${(aboutDoc.aboutText || []).join(' ')}`;
+    }
+
+    // RAG: Query matching details from FAQs, Products, Schemes, Vacancies, News, and Press
     const cleanQuery = message.replace(/[^\w\s]/g, ' ').trim();
     const keywords = cleanQuery.split(/\s+/).filter(w => w.length > 3);
     let matchedSnippets = [];
+
+    if (aboutSnippet) {
+      matchedSnippets.push(aboutSnippet);
+    }
 
     if (keywords.length > 0) {
       const regexPattern = keywords.map(w => `\\b${w}\\b`).join('|');
       const regex = new RegExp(regexPattern, 'i');
 
-      const [faqs, products, schemes] = await Promise.all([
+      const [faqs, products, schemes, vacancies, news, press] = await Promise.all([
         FAQ.find({
           $or: [
             { question: regex },
@@ -353,22 +364,34 @@ app.post('/api/chat', async (req, res) => {
           ]
         }).limit(3),
         Product.find({
-          $or: [
-            { title: regex },
-            { desc: regex }
-          ]
+          title: regex
         }).limit(2),
         SchemeService.find({
           $or: [
             { title: regex },
             { desc: regex }
           ]
+        }).limit(2),
+        Vacancy.find({
+          $or: [
+            { title: regex },
+            { snippet: regex }
+          ]
+        }).limit(3),
+        DrdoNews.find({
+          title: regex
+        }).limit(2),
+        PressRelease.find({
+          title: regex
         }).limit(2)
       ]);
 
       faqs.forEach(f => matchedSnippets.push(`FAQ Q: ${f.question} | A: ${f.answer}`));
-      products.forEach(p => matchedSnippets.push(`Product Name: ${p.title} | Description: ${p.desc || ''}`));
+      products.forEach(p => matchedSnippets.push(`Product Name: ${p.title}`));
       schemes.forEach(s => matchedSnippets.push(`Scheme/Service Title: ${s.title} | Description: ${s.desc || ''}`));
+      vacancies.forEach(v => matchedSnippets.push(`Vacancy/Career/Internship Opportunity: ${v.title} | Details: ${v.snippet || ''} | Published: ${v.publishedDate || ''} | Apply By: ${v.endDate || ''}`));
+      news.forEach(n => matchedSnippets.push(`News: ${n.title} | Date: ${n.date || ''}`));
+      press.forEach(pr => matchedSnippets.push(`Press Release: ${pr.title} | Date: ${pr.date || ''}`));
     }
 
     const contextText = matchedSnippets.length > 0
