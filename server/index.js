@@ -327,7 +327,7 @@ app.post('/api/chat', async (req, res) => {
       return res.status(400).json({ error: 'Message is required' });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.AQ.Ab8RN6JONSyQGvaohC4C5mM0SyeFeIs8Hq_zx0N-AtL5slaDiA;
     if (!apiKey) {
       return res.status(500).json({ error: 'Gemini API key is not configured on the server.' });
     }
