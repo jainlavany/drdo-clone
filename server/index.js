@@ -334,7 +334,7 @@ app.post('/api/chat', async (req, res) => {
       return res.status(500).json({ error: 'Gemini API key is not configured on the server.' });
     }
 
-    const ai = new GoogleGenAI({ apiKey });
+    const genAI = new GoogleGenerativeAI(apiKey);
 
     // RAG: Query matching details from FAQs, Products, and Schemes 
     const cleanQuery = message.replace(/[^\w\s]/g, ' ').trim();
@@ -402,15 +402,17 @@ ${contextText}
       parts: [{ text: message }]
     });
 
-    const response = await ai.models.generateContent({
+    const model = genAI.getGenerativeModel({
       model: 'gemini-1.5-flash',
-      contents,
-      config: {
-        systemInstruction
-      }
+      systemInstruction: systemInstruction
     });
 
-    res.json({ response: response.text });
+    const result = await model.generateContent({
+      contents
+    });
+
+    const response = await result.response;
+    res.json({ response: response.text() });
   } catch (error) {
     console.error('DIVA Chat API Error:', error);
     res.status(500).json({ error: `DIVA Server Error: ${error.message}` });
