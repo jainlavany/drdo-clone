@@ -72,8 +72,8 @@ export default function DivaChat() {
   return (
     <div className="diva-wrapper">
       {/* Floating Action Button Bubble: Girl with headset & mic SVG */}
-      <button 
-        className={`diva-bubble-btn ${isOpen ? 'active' : ''}`} 
+      <button
+        className={`diva-bubble-btn ${isOpen ? 'active' : ''}`}
         onClick={() => {
           setIsOpen(!isOpen);
           if (isOpen) setIsMaximized(false); // Reset maximized state on close
@@ -101,17 +101,17 @@ export default function DivaChat() {
             </div>
             <div className="diva-header-actions">
               {/* Maximize / Minimize toggle */}
-              <button 
-                className="diva-action-btn" 
-                onClick={() => setIsMaximized(!isMaximized)} 
+              <button
+                className="diva-action-btn"
+                onClick={() => setIsMaximized(!isMaximized)}
                 title={isMaximized ? "Minimize Window" : "Maximize Window"}
               >
                 {isMaximized ? '🗗' : '⛶'}
               </button>
               {/* Clear chat history button */}
-              <button 
-                className="diva-action-btn" 
-                onClick={handleClear} 
+              <button
+                className="diva-action-btn"
+                onClick={handleClear}
                 title="Clear Chat History"
               >
                 🗑️

@@ -411,7 +411,7 @@ ${contextText}
     res.json({ response: response.text });
   } catch (error) {
     console.error('DIVA Chat API Error:', error);
-    res.status(500).json({ error: 'Failed to communicate with DIVA assistant.' });
+    res.status(500).json({ error: `DIVA Server Error: ${error.message}` });
   }
 });
 
