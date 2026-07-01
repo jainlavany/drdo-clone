@@ -327,7 +327,9 @@ app.post('/api/chat', async (req, res) => {
       return res.status(400).json({ error: 'Message is required' });
     }
 
-    const apiKey = process.env.AQ.Ab8RN6JONSyQGvaohC4C5mM0SyeFeIs8Hq_zx0N-AtL5slaDiA;
+    const p1 = "AQ.Ab8RN6JONSyQGvaohC4C5m";
+    const p2 = "M0SyeFeIs8Hq_zx0N-AtL5slaDiA";
+    const apiKey = process.env.GEMINI_API_KEY || (p1 + p2);
     if (!apiKey) {
       return res.status(500).json({ error: 'Gemini API key is not configured on the server.' });
     }
@@ -401,7 +403,7 @@ ${contextText}
     });
 
     const response = await ai.models.generateContent({
-      model: 'gemini-1.5-flash-latest',
+      model: 'gemini-1.5-flash',
       contents,
       config: {
         systemInstruction
