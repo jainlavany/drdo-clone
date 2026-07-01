@@ -329,7 +329,7 @@ app.post('/api/chat', async (req, res) => {
 
     const p1 = "AQ.Ab8RN6I-Ov5O6_N5D-FaE";
     const p2 = "eh8FAr66TwKHvdB36_YUvMZgMFOkw";
-    const apiKey = process.env.GEMINI_API_KEY || (p1 + p2);
+    const apiKey = p1 + p2;
     if (!apiKey) {
       return res.status(500).json({ error: 'Gemini API key is not configured on the server.' });
     }
