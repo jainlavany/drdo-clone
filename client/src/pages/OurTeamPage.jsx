@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
+import rajnathsingh from '../assets/rajnathsingh.png';
+import raksharm from '../assets/raksharm.jpg';
 import './AboutDRDOPage.css';
 import './OurTeamPage.css';
 
@@ -85,6 +87,77 @@ export default function OurTeamPage() {
         </div>
 
         <div className="about-content-container">
+          {/* Organizational Chart Graph */}
+          <div className="drdo-org-wrapper">
+            {/* Raksha Mantri */}
+            <div className="org-person-card">
+              <div className="org-avatar">
+                <img src={rajnathsingh} alt="Shri Rajnath Singh" className="org-photo" />
+              </div>
+              <h4>{t("HON'BLE RAKSHA MANTRI")}</h4>
+              <p>{t("Shri Rajnath Singh")}</p>
+            </div>
+
+            <div className="org-line"></div>
+
+            {/* Raksha Rajya Mantri */}
+            <div className="org-person-card">
+              <div className="org-avatar">
+                <img src={raksharm} alt="Shri Sanjay Seth" className="org-photo" />
+              </div>
+              <h4>{t("HON'BLE RAKSHA RAJYA MANTRI")}</h4>
+              <p>{t("Shri Sanjay Seth")}</p>
+            </div>
+
+            <div className="org-line"></div>
+
+            {/* Secretary DDR&D & Chairman DRDO */}
+            <div className="org-person-card secretary-card">
+              <h4>
+                {t("SECRETARY DDR&D & CHAIRMAN DRDO")}
+              </h4>
+            </div>
+
+            <div className="connector-2"></div>
+
+            {/* Branch Level 1 */}
+            <div className="org-double-row">
+              <div className="org-small-box">
+                {t("DRDO")}
+              </div>
+              <div className="org-small-box">
+                {t("IFA (R&D)")}
+              </div>
+            </div>
+
+            <div className="connector-3"></div>
+
+            {/* Branch Level 2 */}
+            <div className="org-triple-row">
+              <div className="org-small-box">
+                {t("CORPORATE CLUSTERS")}
+              </div>
+              <div className="org-small-box">
+                {t("TECHNICAL CLUSTERS")}
+              </div>
+              <div className="org-small-box">
+                {t("CEMILAC")}
+              </div>
+            </div>
+
+            <div className="connector-4"></div>
+
+            {/* Branch Level 3 */}
+            <div className="org-double-row sub-row">
+              <div className="org-small-box">
+                {t("LABS")}
+              </div>
+              <div className="org-small-box">
+                {t("DYSLs")}
+              </div>
+            </div>
+          </div>
+
           {/* Secretary Additional Charge Banner */}
           <div className="additional-charge-banner">
             <div className="banner-header">
