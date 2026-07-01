@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const { GoogleGenAI } = require('@google/genai');
 
 const {
   DrdoNews, PressRelease, ActsPolicy, Vacancy,
@@ -318,6 +319,101 @@ app.get('/api/health', (_, res) => res.json({
   allowedOrigins,
   corsEnv: process.env.CORS_ORIGIN || 'not set'
 }));
+
+app.post('/api/chat', async (req, res) => {
+  try {
+    const { message, history } = req.body;
+    if (!message) {
+      return res.status(400).json({ error: 'Message is required' });
+    }
+
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({ error: 'Gemini API key is not configured on the server.' });
+    }
+
+    const ai = new GoogleGenAI({ apiKey });
+
+    // RAG: Query matching details from FAQs, Products, and Schemes
+    const cleanQuery = message.replace(/[^\w\s]/g, ' ').trim();
+    const keywords = cleanQuery.split(/\s+/).filter(w => w.length > 3);
+    let matchedSnippets = [];
+
+    if (keywords.length > 0) {
+      const regexPattern = keywords.map(w => `\\b${w}\\b`).join('|');
+      const regex = new RegExp(regexPattern, 'i');
+
+      const [faqs, products, schemes] = await Promise.all([
+        FAQ.find({
+          $or: [
+            { question: regex },
+            { answer: regex }
+          ]
+        }).limit(3),
+        Product.find({
+          $or: [
+            { title: regex },
+            { desc: regex }
+          ]
+        }).limit(2),
+        SchemeService.find({
+          $or: [
+            { title: regex },
+            { desc: regex }
+          ]
+        }).limit(2)
+      ]);
+
+      faqs.forEach(f => matchedSnippets.push(`FAQ Q: ${f.question} | A: ${f.answer}`));
+      products.forEach(p => matchedSnippets.push(`Product Name: ${p.title} | Description: ${p.desc || ''}`));
+      schemes.forEach(s => matchedSnippets.push(`Scheme/Service Title: ${s.title} | Description: ${s.desc || ''}`));
+    }
+
+    const contextText = matchedSnippets.length > 0
+      ? matchedSnippets.join('\n')
+      : 'No database context found for this specific query.';
+
+    const systemInstruction = `You are DIVA (DRDO Intelligent Virtual Assistant), the official AI assistant of the DRDO web portal.
+Your job is to answer user queries politely and professionally.
+- Always support basic greetings (hi, hello, how are you, who are you) warmly.
+- For queries related to the website, technologies, products, or services, use the following database context to give a highly detailed, precise answer:
+---
+CONTEXT FROM DRDO DATABASE:
+${contextText}
+---
+- If the user asks about something not present in the context, answer using your general knowledge but mention that this information is not explicitly from the official website database.
+- Do not invent false links, phone numbers, or emails.
+- Be concise, professional, and clear.`;
+
+    const contents = [];
+    if (Array.isArray(history)) {
+      history.forEach(msg => {
+        contents.push({
+          role: msg.sender === 'user' ? 'user' : 'model',
+          parts: [{ text: msg.text }]
+        });
+      });
+    }
+
+    contents.push({
+      role: 'user',
+      parts: [{ text: message }]
+    });
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-1.5-flash',
+      contents,
+      config: {
+        systemInstruction
+      }
+    });
+
+    res.json({ response: response.text });
+  } catch (error) {
+    console.error('DIVA Chat API Error:', error);
+    res.status(500).json({ error: 'Failed to communicate with DIVA assistant.' });
+  }
+});
 
 // ── Seed initial data ─────────────────────────────────────────────────────────
 async function seedIfEmpty() {

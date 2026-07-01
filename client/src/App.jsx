@@ -32,6 +32,7 @@ import VacanciesPage from './pages/VacanciesPage';
 import CompetitionsAwardsPage from './pages/CompetitionsAwardsPage';
 import ProductsPage from './pages/ProductsPage';
 import SearchPage from './pages/SearchPage';
+import DivaChat from './components/DivaChat';
 
 // Inner layout: hides the public Header on /admin routes
 function AppInner() {
@@ -115,6 +116,7 @@ function AppInner() {
           />
         </Routes>
       </main>
+      {!isAdmin && <DivaChat />}
     </>
   );
 }
