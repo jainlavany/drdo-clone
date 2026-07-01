@@ -333,6 +333,36 @@ const RtiDocumentSchema = new Schema({
   order:       { type: Number, default: 0 },
 }, { timestamps: true });
 
+// ── ONOS Settings ────────────────────────────────────────────────────────────
+const OnosSettingSchema = new Schema({
+  homeDesc:           { type: String, default: '' },
+  homeAccessHeader:   { type: String, default: '' },
+  homePhaseText:      { type: String, default: '' },
+  homeOnCampusLabel:  { type: String, default: '' },
+  homeOnCampusLink:   { type: String, default: '' },
+  homeOffCampusLabel: { type: String, default: '' },
+  homeOffCampusLink:  { type: String, default: '' },
+  journalsDesc:       { type: String, default: '' },
+  journalsLink:       { type: String, default: '' },
+  remoteDesc:         { type: String, default: '' },
+  remoteLink:         { type: String, default: '' },
+  sopTitle:           { type: String, default: '' },
+  sopDesc:            { type: String, default: '' },
+  sopFileUrl:         { type: String, default: '' },
+  sopLink:            { type: String, default: '' },
+  contactNote:        { type: String, default: '' },
+  contactEmail:       { type: String, default: '' },
+  contactEmailLabel:  { type: String, default: '' },
+}, { timestamps: true });
+
+// ── ONOS Contacts ────────────────────────────────────────────────────────────
+const OnosContactSchema = new Schema({
+  name:        { type: String, required: true },
+  designation: { type: String, default: '' },
+  phone:       { type: String, default: '' },
+  order:       { type: Number, default: 0 },
+}, { timestamps: true });
+
 module.exports = {
   DrdoNews:         mongoose.model('DrdoNews',         DrdoNewsSchema),
   PressRelease:     mongoose.model('PressRelease',     PressReleaseSchema),
@@ -370,5 +400,7 @@ module.exports = {
   Contact:          mongoose.model('Contact',          ContactSchema),
   RtiStat:          mongoose.model('RtiStat',          RtiStatSchema),
   RtiDocument:      mongoose.model('RtiDocument',      RtiDocumentSchema),
+  OnosSetting:      mongoose.model('OnosSetting',      OnosSettingSchema),
+  OnosContact:      mongoose.model('OnosContact',      OnosContactSchema),
 };
 

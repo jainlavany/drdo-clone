@@ -17,6 +17,7 @@ const {
   PMMessage, HomeMinister, HomeOffering, WhatsNew,
   HomeDocument, HomePersona, HomeSocialMedia, HomeMediaSlide, HomeBottomLink,
   UploadedFile, TeamMember, Contact, RtiStat, RtiDocument,
+  OnosSetting, OnosContact,
 } = require('./models');
 
 const app = express();
@@ -181,7 +182,8 @@ app.get('/api/admin/stats', auth, async (req, res) => {
     schemes, indSupport, awards, products, videos, conferences, onos,
     aboutDrdo, techClusters, corporateClusters,
     pmMsg, ministers, homeOfferings, whatsNew, homeDocs, personas, socialMedia, mediaSlides, bottomLinks,
-    teamMembers, contacts, rtiStats, rtiDocuments
+    teamMembers, contacts, rtiStats, rtiDocuments,
+    onosSettings, onosContacts
   ] = await Promise.all([
     DrdoNews.countDocuments(), PressRelease.countDocuments(), ActsPolicy.countDocuments(),
     Vacancy.countDocuments(), HeroSlide.countDocuments(), NewsTicker.countDocuments(),
@@ -193,6 +195,7 @@ app.get('/api/admin/stats', auth, async (req, res) => {
     PMMessage.countDocuments(), HomeMinister.countDocuments(), HomeOffering.countDocuments(), WhatsNew.countDocuments(),
     HomeDocument.countDocuments(), HomePersona.countDocuments(), HomeSocialMedia.countDocuments(), HomeMediaSlide.countDocuments(), HomeBottomLink.countDocuments(),
     TeamMember.countDocuments(), Contact.countDocuments(), RtiStat.countDocuments(), RtiDocument.countDocuments(),
+    OnosSetting.countDocuments(), OnosContact.countDocuments(),
   ]);
   res.json({
     drdo_in_news: news, press_release: press, acts_policies: acts, vacancies: vac,
@@ -205,6 +208,7 @@ app.get('/api/admin/stats', auth, async (req, res) => {
     home_documents: homeDocs, home_personas: personas, home_social_media: socialMedia,
     home_media_slides: mediaSlides, home_bottom_links: bottomLinks,
     team_members: teamMembers, contacts, rti_stats: rtiStats, rti_documents: rtiDocuments,
+    onos_settings: onosSettings, onos_contacts: onosContacts,
   });
 });
 
@@ -254,6 +258,8 @@ app.use('/api/team-members', crud(TeamMember));
 app.use('/api/contacts', crud(Contact));
 app.use('/api/rti-stats', crud(RtiStat));
 app.use('/api/rti-documents', crud(RtiDocument));
+app.use('/api/onos-settings', crud(OnosSetting));
+app.use('/api/onos-contacts', crud(OnosContact));
 
 app.get('/api/search', async (req, res) => {
   const query = req.query.q;
@@ -1051,6 +1057,41 @@ async function seedIfEmpty() {
       { title: "How to Submit RTI Form & Fee", description: "Guidelines for RTI submission and fee payment", link: "https://drdo.gov.in/drdo/sites/default/files/Basic-PDF/How_to_Submit_RTI_Form_Fee_12_06_2026.pdf", order: 4 },
       { title: "Exemption under RTI Act 2005", description: "RTI exemptions applicable to DRDO", link: "https://drdo.gov.in/drdo/sites/default/files/Basic-PDF/Exemption_under_RTI_Act_2005_12_06_2026.pdf", order: 5 },
       { title: "Guidelines for Information Seekers", description: "Information seeker guidelines", link: "https://drdo.gov.in/drdo/sites/default/files/Basic-PDF/Guidelines_for_Information_Seeders_12_06_2026.pdf", order: 6 }
+    ]);
+  }
+
+  // 36. OnosSetting
+  if ((await OnosSetting.countDocuments()) === 0) {
+    console.log('🌱 Seeding OnosSetting...');
+    await OnosSetting.create({
+      homeDesc: "DESIDOC (Defence Scientific Information & Documentation Centre) is the nodal agency for DRDO E-Resources Consortium, responsible for subscribing, administering and monitoring access to e-journals, e-magazines, and other digital resources on behalf of DRDO Laboratories. DRDO E-Resources Consortium provides a centralized platform for sharing subscribed electronic resources among DRDO libraries. The consortium enables efficient utilization of information resources by facilitating access to scholarly content for DRDO scientists, researchers, and technical personnel working towards common missions and objectives of DRDO.",
+      homeAccessHeader: "Access of ONOS E-Journals:",
+      homePhaseText: "Under the Pradhan Mantri – One Nation One Subscription (PM-ONOS) Phase-I initiative, DRDO Laboratories have access to 13,000+ e-journals from 32 leading international publishers.",
+      homeOnCampusLabel: "On-Campus Access (IP-based): DRDO users can access these subscribed journals within DRDO lab/estt premises through the authorized DRDO network through the PM-ONOS portal:",
+      homeOnCampusLink: "https://www.onos.gov.in/",
+      homeOffCampusLabel: "Off-Campus/Remote Access (Authentication-based): To facilitate access beyond DRDO Laboratory premises, a Shibboleth-based Remote Access Service has been enabled for DRDO users. Through this service, authorized users can access the portals remotely at:",
+      homeOffCampusLink: "https://ejlsonos.in/",
+      journalsDesc: "Access all ONOS (One Nation One Subscription) journals available to DRDO scientists and researchers through the official ONOS portal. The portal provides seamless access to a wide range of international journals subscribed under the ONOS initiative.",
+      journalsLink: "https://www.onos.gov.in/",
+      remoteDesc: "Access DRDO e-journals remotely through the ONOS Remote Access Portal. This portal enables authorised DRDO users to access subscribed electronic journals from outside the DRDO network using their credentials.",
+      remoteLink: "https://ejlsonos.in/",
+      sopTitle: "SOP for Fair Use of E-Journals",
+      sopDesc: "Download the Standard Operating Procedure (SOP) document for fair use of subscribed e-journals under the DRDO E-Journal Services consortium. (PDF, 298.01 KB)",
+      sopFileUrl: "",
+      sopLink: "https://drdo.gov.in/drdo/sites/default/files/form_formats/SOPforEjournals.pdf",
+      contactNote: "For queries related to DRDO E-Journal Services and ONOS subscriptions, please contact DESIDOC officials listed below:",
+      contactEmail: "ejournal.desidoc@gov.in",
+      contactEmailLabel: "ejournal[dot]desidoc[at]gov[dot]in",
+    });
+  }
+
+  // 37. OnosContact
+  if ((await OnosContact.countDocuments()) === 0) {
+    console.log('🌱 Seeding OnosContact...');
+    await OnosContact.insertMany([
+      { name: "Sh. Sudhanshu Bhusan", designation: "Scientist F & Group Head", phone: "2390 2411", order: 1 },
+      { name: "Mr Rajesh Kumar Singh", designation: "Scientist F & Division Head", phone: "2390 2512", order: 2 },
+      { name: "E-Journal Team", designation: "—", phone: "2390 2511", order: 3 },
     ]);
   }
 

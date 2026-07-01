@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { AboutDrdoApi, TechClusterApi, CorporateClusterApi } from './api';
+import { AboutDrdoApi, TechClusterApi, CorporateClusterApi, OnosSettingApi, uploadFile } from './api';
 
 // ── Toast Helper inside local components ──────────────────────────────────────
 function LocalToast({ msg, type, onHide }) {
@@ -1091,6 +1091,281 @@ export function CorporateClustersCMS({ onToast }) {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// ── ONOS Page & Tab Settings CMS ──────────────────────────────────────────────
+// ──────────────────────────────────────────────────────────────────────────────
+export function OnosCMS({ onToast }) {
+  const [doc, setDoc] = useState(null);
+  const [homeDesc, setHomeDesc] = useState('');
+  const [homeAccessHeader, setHomeAccessHeader] = useState('');
+  const [homePhaseText, setHomePhaseText] = useState('');
+  const [homeOnCampusLabel, setHomeOnCampusLabel] = useState('');
+  const [homeOnCampusLink, setHomeOnCampusLink] = useState('');
+  const [homeOffCampusLabel, setHomeOffCampusLabel] = useState('');
+  const [homeOffCampusLink, setHomeOffCampusLink] = useState('');
+
+  const [journalsDesc, setJournalsDesc] = useState('');
+  const [journalsLink, setJournalsLink] = useState('');
+
+  const [remoteDesc, setRemoteDesc] = useState('');
+  const [remoteLink, setRemoteLink] = useState('');
+
+  const [sopTitle, setSopTitle] = useState('');
+  const [sopDesc, setSopDesc] = useState('');
+  const [sopFileUrl, setSopFileUrl] = useState('');
+  const [sopLink, setSopLink] = useState('');
+
+  const [contactNote, setContactNote] = useState('');
+  const [contactEmail, setContactEmail] = useState('');
+  const [contactEmailLabel, setContactEmailLabel] = useState('');
+
+  const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const load = useCallback(() => {
+    setLoading(true);
+    OnosSettingApi.getAll()
+      .then(res => {
+        if (res && res.length > 0) {
+          const d = res[0];
+          setDoc(d);
+          setHomeDesc(d.homeDesc || '');
+          setHomeAccessHeader(d.homeAccessHeader || '');
+          setHomePhaseText(d.homePhaseText || '');
+          setHomeOnCampusLabel(d.homeOnCampusLabel || '');
+          setHomeOnCampusLink(d.homeOnCampusLink || '');
+          setHomeOffCampusLabel(d.homeOffCampusLabel || '');
+          setHomeOffCampusLink(d.homeOffCampusLink || '');
+
+          setJournalsDesc(d.journalsDesc || '');
+          setJournalsLink(d.journalsLink || '');
+
+          setRemoteDesc(d.remoteDesc || '');
+          setRemoteLink(d.remoteLink || '');
+
+          setSopTitle(d.sopTitle || '');
+          setSopDesc(d.sopDesc || '');
+          setSopFileUrl(d.sopFileUrl || '');
+          setSopLink(d.sopLink || '');
+
+          setContactNote(d.contactNote || '');
+          setContactEmail(d.contactEmail || '');
+          setContactEmailLabel(d.contactEmailLabel || '');
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const handlePdfUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+      const res = await uploadFile('pdf', file);
+      setSopFileUrl(res.url);
+      onToast('SOP PDF uploaded successfully', 'ok');
+    } catch (err) {
+      console.error(err);
+      onToast('Failed to upload PDF', 'err');
+    }
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    const body = {
+      homeDesc,
+      homeAccessHeader,
+      homePhaseText,
+      homeOnCampusLabel,
+      homeOnCampusLink,
+      homeOffCampusLabel,
+      homeOffCampusLink,
+      journalsDesc,
+      journalsLink,
+      remoteDesc,
+      remoteLink,
+      sopTitle,
+      sopDesc,
+      sopFileUrl,
+      sopLink,
+      contactNote,
+      contactEmail,
+      contactEmailLabel,
+    };
+
+    try {
+      if (doc && doc._id) {
+        await OnosSettingApi.update(doc._id, body);
+      } else {
+        await OnosSettingApi.create(body);
+      }
+      onToast('ONOS content settings saved successfully', 'ok');
+      load();
+    } catch (err) {
+      console.error(err);
+      onToast('Failed to save settings', 'err');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return <div className="adm-panel" style={{ padding: '2rem', textAlign: 'center' }}>Loading ONOS Settings...</div>;
+  }
+
+  return (
+    <div className="adm-panel">
+      <div className="adm-panel-hd">
+        <div className="adm-panel-title">🌐 Edit ONOS Settings & Pages</div>
+        <div className="adm-panel-actions">
+          <button className="adm-btn-save" onClick={handleSave} disabled={saving} style={{ padding: '0.5rem 1.5rem' }}>
+            {saving ? 'Saving...' : '💾 Save Changes'}
+          </button>
+        </div>
+      </div>
+
+      <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+        
+        {/* HOME TAB SECTION */}
+        <div style={{ borderBottom: '1px solid #eee', paddingBottom: '1.5rem' }}>
+          <h3 style={{ margin: '0 0 1rem 0', color: '#1e4e8c', borderBottom: '2px solid #1e4e8c', display: 'inline-block', paddingBottom: '4px' }}>
+            1. Home Tab Settings
+          </h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div className="adm-fg">
+              <label>Description Paragraph</label>
+              <textarea rows={4} value={homeDesc} onChange={e => setHomeDesc(e.target.value)} />
+            </div>
+            <div className="adm-fg">
+              <label>Access Header Text</label>
+              <input type="text" value={homeAccessHeader} onChange={e => setHomeAccessHeader(e.target.value)} />
+            </div>
+            <div className="adm-fg">
+              <label>Phase Access Information Text</label>
+              <textarea rows={2} value={homePhaseText} onChange={e => setHomePhaseText(e.target.value)} />
+            </div>
+            <div className="adm-form-row">
+              <div className="adm-fg">
+                <label>On-Campus Access Description</label>
+                <textarea rows={2} value={homeOnCampusLabel} onChange={e => setHomeOnCampusLabel(e.target.value)} />
+              </div>
+              <div className="adm-fg">
+                <label>On-Campus Portal Link</label>
+                <input type="text" value={homeOnCampusLink} onChange={e => setHomeOnCampusLink(e.target.value)} />
+              </div>
+            </div>
+            <div className="adm-form-row">
+              <div className="adm-fg">
+                <label>Off-Campus Access Description</label>
+                <textarea rows={2} value={homeOffCampusLabel} onChange={e => setHomeOffCampusLabel(e.target.value)} />
+              </div>
+              <div className="adm-fg">
+                <label>Off-Campus Portal Link</label>
+                <input type="text" value={homeOffCampusLink} onChange={e => setHomeOffCampusLink(e.target.value)} />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ONOS JOURNALS TAB SECTION */}
+        <div style={{ borderBottom: '1px solid #eee', paddingBottom: '1.5rem' }}>
+          <h3 style={{ margin: '0 0 1rem 0', color: '#1e4e8c', borderBottom: '2px solid #1e4e8c', display: 'inline-block', paddingBottom: '4px' }}>
+            2. ONOS Journals Tab Settings
+          </h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div className="adm-fg">
+              <label>Description Text</label>
+              <textarea rows={3} value={journalsDesc} onChange={e => setJournalsDesc(e.target.value)} />
+            </div>
+            <div className="adm-fg">
+              <label>ONOS Journals Portal Link</label>
+              <input type="text" value={journalsLink} onChange={e => setJournalsLink(e.target.value)} />
+            </div>
+          </div>
+        </div>
+
+        {/* REMOTE ACCESS TAB SECTION */}
+        <div style={{ borderBottom: '1px solid #eee', paddingBottom: '1.5rem' }}>
+          <h3 style={{ margin: '0 0 1rem 0', color: '#1e4e8c', borderBottom: '2px solid #1e4e8c', display: 'inline-block', paddingBottom: '4px' }}>
+            3. ONOS Remote Access Portal Settings
+          </h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div className="adm-fg">
+              <label>Description Text</label>
+              <textarea rows={3} value={remoteDesc} onChange={e => setRemoteDesc(e.target.value)} />
+            </div>
+            <div className="adm-fg">
+              <label>ONOS Remote Access Portal Link</label>
+              <input type="text" value={remoteLink} onChange={e => setRemoteLink(e.target.value)} />
+            </div>
+          </div>
+        </div>
+
+        {/* SOP TAB SECTION */}
+        <div style={{ borderBottom: '1px solid #eee', paddingBottom: '1.5rem' }}>
+          <h3 style={{ margin: '0 0 1rem 0', color: '#1e4e8c', borderBottom: '2px solid #1e4e8c', display: 'inline-block', paddingBottom: '4px' }}>
+            4. SOP for Fair Use Settings
+          </h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div className="adm-fg">
+              <label>SOP Title</label>
+              <input type="text" value={sopTitle} onChange={e => setSopTitle(e.target.value)} />
+            </div>
+            <div className="adm-fg">
+              <label>SOP Description Text</label>
+              <textarea rows={2} value={sopDesc} onChange={e => setSopDesc(e.target.value)} />
+            </div>
+            <div className="adm-form-row">
+              <div className="adm-fg">
+                <label>SOP Document URL Link</label>
+                <input type="text" value={sopLink} onChange={e => setSopLink(e.target.value)} />
+              </div>
+              <div className="adm-fg">
+                <label>Or Upload PDF File</label>
+                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                  <input type="file" accept=".pdf" onChange={handlePdfUpload} style={{ flex: 1 }} />
+                  {sopFileUrl && <a href={sopFileUrl} target="_blank" rel="noreferrer" style={{ fontSize: '0.85rem', color: '#1e4e8c', fontWeight: 'bold' }}>View Uploaded</a>}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* CONTACT US TAB SECTION */}
+        <div>
+          <h3 style={{ margin: '0 0 1rem 0', color: '#1e4e8c', borderBottom: '2px solid #1e4e8c', display: 'inline-block', paddingBottom: '4px' }}>
+            5. Contact Us Tab Settings
+          </h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div className="adm-fg">
+              <label>Contact Section Note/Intro</label>
+              <textarea rows={2} value={contactNote} onChange={e => setContactNote(e.target.value)} />
+            </div>
+            <div className="adm-form-row">
+              <div className="adm-fg">
+                <label>Contact Email Address</label>
+                <input type="text" value={contactEmail} onChange={e => setContactEmail(e.target.value)} />
+              </div>
+              <div className="adm-fg">
+                <label>Contact Email Display Label</label>
+                <input type="text" value={contactEmailLabel} onChange={e => setContactEmailLabel(e.target.value)} />
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
   );
 }

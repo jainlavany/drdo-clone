@@ -8,10 +8,10 @@ import { logout, verifyToken, getStats,
   VideosApi, ConferencesApi, ONOSPublisherApi,
   PMMessageApi, HomeMinisterApi, HomeOfferingApi, WhatsNewApi,
   HomeDocumentApi, HomePersonaApi, HomeSocialMediaApi, HomeMediaSlideApi, HomeBottomLinkApi,
-  TeamMembersApi, ContactsApi, RtiStatsApi, RtiDocumentsApi,
+  TeamMembersApi, ContactsApi, RtiStatsApi, RtiDocumentsApi, OnosContactApi,
 } from './api';
 import Section, { Toast } from './Section';
-import { AboutDrdoCMS, TechClustersCMS, CorporateClustersCMS } from './OrganisationCMS';
+import { AboutDrdoCMS, TechClustersCMS, CorporateClustersCMS, OnosCMS } from './OrganisationCMS';
 import {
   NEWS_CFG, PRESS_CFG, ACTS_CFG, VAC_CFG, HERO_CFG,
   TICKER_CFG, PHOTO_CFG, PUB_CFG, FAQ_CFG, LINKS_CFG,
@@ -20,7 +20,7 @@ import {
   VIDEO_CFG, CONFERENCE_CFG, ONOS_CFG,
   PM_MSG_CFG, MINISTER_CFG, HOME_OFFERING_CFG, WHATS_NEW_CFG,
   HOME_DOC_CFG, HOME_PERSONA_CFG, HOME_SOCIAL_CFG, HOME_MEDIA_SLIDE_CFG, HOME_BOTTOM_LINK_CFG,
-  TEAM_CFG, CONTACT_CFG, RTI_STATS_CFG, RTI_DOCS_CFG,
+  TEAM_CFG, CONTACT_CFG, RTI_STATS_CFG, RTI_DOCS_CFG, ONOS_CONTACT_CFG,
 } from './sectionConfigs';
 import './AdminDashboard.css';
 
@@ -58,6 +58,8 @@ const NAV = [
   { id: 'videos',             icon: '🎬', label: 'Video Gallery',           group: 'Resources' },
   { id: 'conferences',        icon: '🎤', label: 'Conference',              group: 'Resources' },
   { id: 'onos-publishers',    icon: '📖', label: 'ONOS Publishers',         group: 'Resources' },
+  { id: 'onos-settings',      icon: '🌐', label: 'ONOS Settings',           group: 'Resources' },
+  { id: 'onos-contacts',      icon: '📞', label: 'ONOS Contacts',           group: 'Resources' },
   { id: 'faqs',               icon: '❓', label: 'FAQs',                    group: 'Connect' },
   { id: 'important-links',    icon: '🔗', label: 'Important Links',           group: 'Connect' },
   { id: 'contacts',           icon: '📞', label: 'Contact Us Items',        group: 'Connect' },
@@ -76,6 +78,8 @@ const STAT_KEYS = {
   'competitions-awards':'competitions_awards','products':           'products',
   'videos':             'videos',            'conferences':        'conferences',
   'onos-publishers':    'onos_publishers',
+  'onos-settings':      'onos_settings',
+  'onos-contacts':      'onos_contacts',
   'about-drdo':         'about_drdo',
   'tech-clusters':      'tech_clusters',
   'corporate-clusters': 'corporate_clusters',
@@ -128,6 +132,7 @@ const SECTION_MAP = {
   'contacts':           { api: ContactsApi,        cfg: CONTACT_CFG,          title: 'Contact Us Items' },
   'rti-stats':          { api: RtiStatsApi,        cfg: RTI_STATS_CFG,        title: 'RTI Statistics' },
   'rti-documents':      { api: RtiDocumentsApi,    cfg: RTI_DOCS_CFG,         title: 'RTI Documents' },
+  'onos-contacts':      { api: OnosContactApi,     cfg: ONOS_CONTACT_CFG,     title: 'ONOS Contacts' },
 };
 
 // ── Overview panel ────────────────────────────────────────────────────────────
@@ -168,6 +173,8 @@ function Overview({ stats, onNavigate }) {
     { id: 'contacts',           icon: '📞', label: 'Contacts info',             key: 'contacts' },
     { id: 'rti-stats',          icon: '📊', label: 'RTI Stats',                 key: 'rti_stats' },
     { id: 'rti-documents',      icon: '📄', label: 'RTI Documents',             key: 'rti_documents' },
+    { id: 'onos-settings',      icon: '🌐', label: 'ONOS Settings',             key: 'onos_settings' },
+    { id: 'onos-contacts',      icon: '📞', label: 'ONOS Contacts',             key: 'onos_contacts' },
   ];
   return (
     <>
@@ -284,6 +291,10 @@ export default function AdminDashboard() {
 
           {tab === 'corporate-clusters' && (
             <CorporateClustersCMS onToast={handleToast} />
+          )}
+
+          {tab === 'onos-settings' && (
+            <OnosCMS onToast={handleToast} />
           )}
 
           {section && (

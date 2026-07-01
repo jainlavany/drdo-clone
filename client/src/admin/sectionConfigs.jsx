@@ -610,3 +610,21 @@ export const RTI_DOCS_CFG = {
     <td style={{ color: '#6b7280', textAlign: 'center' }}>{item.order}</td>
   </>),
 };
+
+// ── ONOS Contacts ────────────────────────────────────────────────────────────
+export const ONOS_CONTACT_CFG = {
+  fields: [
+    { key: 'name',        label: 'Contact Name', placeholder: 'Sh. Sudhanshu Bhusan' },
+    { key: 'designation', label: 'Designation', placeholder: 'Scientist F & Group Head' },
+    { key: 'phone',       label: 'Phone / Ext', placeholder: '2390 2411' },
+    { key: 'order',       label: 'Display Order', type: 'number', placeholder: '1' },
+  ],
+  colHeaders: ['Name', 'Designation', 'Phone', 'Order'],
+  emptyRow:   { name: '', designation: '', phone: '', order: 0 },
+  renderRow:  item => (<>
+    <td><strong>{item.name}</strong></td>
+    <td>{item.designation}</td>
+    <td style={{ color: '#6b7280' }}>{item.phone || '—'}</td>
+    <td style={{ color: '#6b7280', textAlign: 'center' }}>{item.order}</td>
+  </>),
+};

@@ -101,3 +101,5 @@ export const TeamMembersApi     = makeCrud('team-members');
 export const ContactsApi        = makeCrud('contacts');
 export const RtiStatsApi        = makeCrud('rti-stats');
 export const RtiDocumentsApi    = makeCrud('rti-documents');
+export const OnosSettingApi     = makeCrud('onos-settings');
+export const OnosContactApi     = makeCrud('onos-contacts');

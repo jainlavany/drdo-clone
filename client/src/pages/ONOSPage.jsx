@@ -44,12 +44,6 @@ const publishers = [
   { name: 'Aakashganga Open', url: 'http://www.aakashgangaopen.in/' }
 ];
 
-const contacts = [
-  { name: 'Sh. Sudhanshu Bhusan', designation: 'Scientist F & Group Head', phone: '2390 2411' },
-  { name: 'Mr Rajesh Kumar Singh', designation: 'Scientist F & Division Head', phone: '2390 2512' },
-  { name: 'E-Journal Team', designation: '—', phone: '2390 2511' }
-];
-
 const TABS = [
   'Home',
   'ONOS Journals',
@@ -65,9 +59,37 @@ export default function ONOSPage() {
   const [activeTab, setActiveTab] = useState(0);
   const [search, setSearch] = useState('');
   const [pubList, setPubList] = useState(publishers);
+  const [onosContacts, setOnosContacts] = useState([
+    { name: 'Sh. Sudhanshu Bhusan', designation: 'Scientist F & Group Head', phone: '2390 2411' },
+    { name: 'Mr Rajesh Kumar Singh', designation: 'Scientist F & Division Head', phone: '2390 2512' },
+    { name: 'E-Journal Team', designation: '—', phone: '2390 2511' }
+  ]);
+  const [settings, setSettings] = useState({
+    homeDesc: "DESIDOC (Defence Scientific Information & Documentation Centre) is the nodal agency for DRDO E-Resources Consortium, responsible for subscribing, administering and monitoring access to e-journals, e-magazines, and other digital resources on behalf of DRDO Laboratories. DRDO E-Resources Consortium provides a centralized platform for sharing subscribed electronic resources among DRDO libraries. The consortium enables efficient utilization of information resources by facilitating access to scholarly content for DRDO scientists, researchers, and technical personnel working towards common missions and objectives of DRDO.",
+    homeAccessHeader: "Access of ONOS E-Journals:",
+    homePhaseText: "Under the Pradhan Mantri – One Nation One Subscription (PM-ONOS) Phase-I initiative, DRDO Laboratories have access to 13,000+ e-journals from 32 leading international publishers.",
+    homeOnCampusLabel: "On-Campus Access (IP-based): DRDO users can access these subscribed journals within DRDO lab/estt premises through the authorized DRDO network through the PM-ONOS portal:",
+    homeOnCampusLink: "https://www.onos.gov.in/",
+    homeOffCampusLabel: "Off-Campus/Remote Access (Authentication-based): To facilitate access beyond DRDO Laboratory premises, a Shibboleth-based Remote Access Service has been enabled for DRDO users. Through this service, authorized users can access the portals remotely at:",
+    homeOffCampusLink: "https://ejlsonos.in/",
+    journalsDesc: "Access all ONOS (One Nation One Subscription) journals available to DRDO scientists and researchers through the official ONOS portal. The portal provides seamless access to a wide range of international journals subscribed under the ONOS initiative.",
+    journalsLink: "https://www.onos.gov.in/",
+    remoteDesc: "Access DRDO e-journals remotely through the ONOS Remote Access Portal. This portal enables authorised DRDO users to access subscribed electronic journals from outside the DRDO network using their credentials.",
+    remoteLink: "https://ejlsonos.in/",
+    sopTitle: "SOP for Fair Use of E-Journals",
+    sopDesc: "Download the Standard Operating Procedure (SOP) document for fair use of subscribed e-journals under the DRDO E-Journal Services consortium. (PDF, 298.01 KB)",
+    sopFileUrl: "",
+    sopLink: "https://drdo.gov.in/drdo/sites/default/files/form_formats/SOPforEjournals.pdf",
+    contactNote: "For queries related to DRDO E-Journal Services and ONOS subscriptions, please contact DESIDOC officials listed below:",
+    contactEmail: "ejournal.desidoc@gov.in",
+    contactEmailLabel: "ejournal[dot]desidoc[at]gov[dot]in",
+  });
 
   useEffect(() => {
-    fetch(`${window.SERVER_BASE_URL || 'http://localhost:4000'}/api/onos-publishers`)
+    const baseUrl = window.SERVER_BASE_URL || 'http://localhost:4000';
+    
+    // Fetch ONOS Publishers
+    fetch(`${baseUrl}/api/onos-publishers`)
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
@@ -76,6 +98,27 @@ export default function ONOSPage() {
         }
       })
       .catch(err => console.error('Error fetching publishers:', err));
+
+    // Fetch ONOS Settings
+    fetch(`${baseUrl}/api/onos-settings`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.length > 0) {
+          setSettings(data[0]);
+        }
+      })
+      .catch(err => console.error('Error fetching ONOS settings:', err));
+
+    // Fetch ONOS Contacts
+    fetch(`${baseUrl}/api/onos-contacts`)
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          const sorted = data.sort((a, b) => (a.order || 0) - (b.order || 0));
+          setOnosContacts(sorted);
+        }
+      })
+      .catch(err => console.error('Error fetching ONOS contacts:', err));
   }, []);
 
   const filteredPublishers = useMemo(() => {
@@ -136,20 +179,20 @@ export default function ONOSPage() {
             {activeTab === 0 && (
               <div role="tabpanel" id="panel-home">
                 <p className="onos-home-desc">
-                  {t("DESIDOC (Defence Scientific Information & Documentation Centre) is the nodal agency for DRDO E-Resources Consortium, responsible for subscribing, administering and monitoring access to e-journals, e-magazines, and other digital resources on behalf of DRDO Laboratories. DRDO E-Resources Consortium provides a centralized platform for sharing subscribed electronic resources among DRDO libraries. The consortium enables efficient utilization of information resources by facilitating access to scholarly content for DRDO scientists, researchers, and technical personnel working towards common missions and objectives of DRDO.")}
+                  {t(settings.homeDesc)}
                 </p>
                 <p className="onos-home-desc" style={{ fontWeight: '600', color: '#111' }}>
-                  {t('Access of ONOS E-Journals:')}
+                  {t(settings.homeAccessHeader)}
                 </p>
                 <p className="onos-home-desc">
-                  {t("Under the Pradhan Mantri – One Nation One Subscription (PM-ONOS) Phase-I initiative, DRDO Laboratories have access to 13,000+ e-journals from 32 leading international publishers.")}
+                  {t(settings.homePhaseText)}
                 </p>
                 <ul className="onos-bullets">
                   <li>
-                    <strong>{t("On-Campus Access (IP-based):")}</strong> DRDO users can access these subscribed journals within DRDO lab/estt premises through the authorized DRDO network through the PM-ONOS portal: <a href="https://www.onos.gov.in/" target="_blank" rel="noreferrer" className="onos-link-title" style={{ wordBreak: 'break-all' }}>https://www.onos.gov.in/</a>
+                    <strong>{t("On-Campus Access (IP-based):")}</strong> {t(settings.homeOnCampusLabel)} <a href={settings.homeOnCampusLink} target="_blank" rel="noreferrer" className="onos-link-title" style={{ wordBreak: 'break-all' }}>{settings.homeOnCampusLink}</a>
                   </li>
                   <li>
-                    <strong>{t("Off-Campus/Remote Access (Authentication-based):")}</strong> To facilitate access beyond DRDO Laboratory premises, a Shibboleth-based Remote Access Service has been enabled for DRDO users. Through this service, authorized users can access the portals remotely at: <a href="https://ejlsonos.in/" target="_blank" rel="noreferrer" className="onos-link-title" style={{ wordBreak: 'break-all' }}>https://ejlsonos.in/</a>
+                    <strong>{t("Off-Campus/Remote Access (Authentication-based):")}</strong> {t(settings.homeOffCampusLabel)} <a href={settings.homeOffCampusLink} target="_blank" rel="noreferrer" className="onos-link-title" style={{ wordBreak: 'break-all' }}>{settings.homeOffCampusLink}</a>
                   </li>
                 </ul>
               </div>
@@ -158,11 +201,11 @@ export default function ONOSPage() {
             {activeTab === 1 && (
               <div role="tabpanel" id="panel-journals">
                 <p className="onos-home-desc">
-                  {t("Access all ONOS (One Nation One Subscription) journals available to DRDO scientists and researchers through the official ONOS portal. The portal provides seamless access to a wide range of international journals subscribed under the ONOS initiative.")}
+                  {t(settings.journalsDesc)}
                 </p>
                 <div style={{ marginTop: '24px' }}>
                   <a
-                    href="https://www.onos.gov.in/"
+                    href={settings.journalsLink}
                     className="onos-portal-btn"
                     target="_blank"
                     rel="noreferrer"
@@ -180,11 +223,11 @@ export default function ONOSPage() {
             {activeTab === 2 && (
               <div role="tabpanel" id="panel-remote">
                 <p className="onos-home-desc">
-                  {t("Access DRDO e-journals remotely through the ONOS Remote Access Portal. This portal enables authorised DRDO users to access subscribed electronic journals from outside the DRDO network using their credentials.")}
+                  {t(settings.remoteDesc)}
                 </p>
                 <div style={{ marginTop: '24px' }}>
                   <a
-                    href="https://ejlsonos.in/"
+                    href={settings.remoteLink}
                     className="onos-portal-btn"
                     target="_blank"
                     rel="noreferrer"
@@ -271,13 +314,13 @@ export default function ONOSPage() {
               <div role="tabpanel" id="panel-sop">
                 <div className="onos-download-box">
                   <div className="onos-dl-left">
-                    <div className="onos-dl-title">{t('SOP for Fair Use of E-Journals')}</div>
+                    <div className="onos-dl-title">{t(settings.sopTitle)}</div>
                     <div className="onos-dl-desc">
-                      {t("Download the Standard Operating Procedure (SOP) document for fair use of subscribed e-journals under the DRDO E-Journal Services consortium. (PDF, 298.01 KB)")}
+                      {t(settings.sopDesc)}
                     </div>
                   </div>
                   <a
-                    href="https://drdo.gov.in/drdo/sites/default/files/form_formats/SOPforEjournals.pdf"
+                    href={settings.sopFileUrl || settings.sopLink}
                     target="_blank"
                     rel="noreferrer"
                     className="onos-dl-btn"
@@ -295,7 +338,7 @@ export default function ONOSPage() {
             {activeTab === 5 && (
               <div role="tabpanel" id="panel-contact">
                 <div className="onos-contact-note">
-                  {t("For queries related to DRDO E-Journal Services and ONOS subscriptions, please contact DESIDOC officials listed below:")}
+                  {t(settings.contactNote)}
                 </div>
                 <div className="onos-table-wrapper" style={{ marginBottom: '24px' }}>
                   <table className="onos-table">
@@ -307,8 +350,8 @@ export default function ONOSPage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {contacts.map((contact, idx) => (
-                        <tr key={idx} id={`contact-row-${idx + 1}`}>
+                      {onosContacts.map((contact, idx) => (
+                        <tr key={contact._id || idx} id={`contact-row-${idx + 1}`}>
                           <td style={{ fontWeight: '600', color: '#1a5f6a' }}>{t(contact.name)}</td>
                           <td>{t(contact.designation)}</td>
                           <td>{t(contact.phone)}</td>
@@ -320,8 +363,8 @@ export default function ONOSPage() {
 
                 <div className="onos-email-wrap">
                   <span>{t('Email:')}</span>
-                  <a href="mailto:ejournal.desidoc@gov.in" className="onos-email-link" id="onos-contact-email">
-                    {t("ejournal[dot]desidoc[at]gov[dot]in")}
+                  <a href={`mailto:${settings.contactEmail}`} className="onos-email-link" id="onos-contact-email">
+                    {t(settings.contactEmailLabel)}
                   </a>
                 </div>
               </div>
