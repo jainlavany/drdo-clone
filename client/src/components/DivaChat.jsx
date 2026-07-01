@@ -10,7 +10,7 @@ export default function DivaChat() {
   const [messages, setMessages] = useState([
     {
       sender: 'bot',
-      text: "Hi! I am DIVA (DRDO Intelligent Virtual Assistant), how can I help you?"
+      text: "Hi ! I am DIVA (DRDO Intelligent Virtual Assistant), how can I help you?"
     }
   ]);
   const [input, setInput] = useState('');
