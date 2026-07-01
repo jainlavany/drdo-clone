@@ -38,25 +38,27 @@ export default function DivaChat() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: userMessage,
-          history: messages // Pass the current history
+          history: messages
         })
       });
 
-      if (!res.ok) {
-        throw new Error('Failed to fetch response');
+      let data;
+      try {
+        data = await res.json();
+      } catch (jsonErr) {
+        throw new Error('Server returned an invalid non-JSON response');
       }
 
-      const data = await res.json();
-      if (data.error) {
-        setMessages((prev) => [...prev, { sender: 'bot', text: data.error }]);
-      } else {
-        setMessages((prev) => [...prev, { sender: 'bot', text: data.response }]);
+      if (!res.ok) {
+        throw new Error(data?.error || `Server error (Status ${res.status})`);
       }
+
+      setMessages((prev) => [...prev, { sender: 'bot', text: data.response }]);
     } catch (err) {
       console.error('DIVA error:', err);
       setMessages((prev) => [
         ...prev,
-        { sender: 'bot', text: 'Sorry, I am unable to connect to the assistant server at the moment.' }
+        { sender: 'bot', text: `Error: ${err.message}` }
       ]);
     } finally {
       setLoading(false);
