@@ -562,9 +562,41 @@
 .adm-toast.err { border-left: 4px solid var(--c-danger); }
 
 /* ── Responsive ────────────────────────────────────────────────────────────── */
+/* Sidebar toggle button (hidden on desktop, visible on mobile) */
+.adm-sb-toggle {
+  display: none;
+}
+
+.adm-sb-backdrop {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .adm-sb { transform: translateX(-220px); transition: transform 0.25s; }
   .adm-sb.open { transform: translateX(0); }
   .adm-main { margin-left: 0; }
   .adm-form-row { grid-template-columns: 1fr; }
+
+  .adm-sb-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: #f3f4f6;
+    border: 1px solid var(--c-border);
+    border-radius: 6px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--c-text);
+    margin-right: 0.5rem;
+  }
+
+  .adm-sb-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 150;
+  }
 }

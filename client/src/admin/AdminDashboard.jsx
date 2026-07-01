@@ -207,6 +207,7 @@ export default function AdminDashboard() {
   const [tab, setTab]            = useState('overview');
   const [stats, setStats]        = useState(null);
   const [toast, setToast]        = useState(null);
+  const [sbOpen, setSbOpen]      = useState(false);
 
   useEffect(() => {
     verifyToken().then(ok => {
@@ -228,8 +229,11 @@ export default function AdminDashboard() {
   return (
     <div className="adm-wrap">
 
+      {/* ── Sidebar backdrop on mobile ── */}
+      {sbOpen && <div className="adm-sb-backdrop" onClick={() => setSbOpen(false)} />}
+
       {/* ── Sidebar ── */}
-      <aside className="adm-sb">
+      <aside className={`adm-sb ${sbOpen ? 'open' : ''}`}>
         <div className="adm-sb-brand">
           <div className="adm-sb-brand-icon">🛡️</div>
           <div className="adm-sb-brand-text">
@@ -246,7 +250,7 @@ export default function AdminDashboard() {
                 <div
                   key={n.id}
                   className={`adm-sb-item ${tab === n.id ? 'active' : ''}`}
-                  onClick={() => setTab(n.id)}
+                  onClick={() => { setTab(n.id); setSbOpen(false); }}
                 >
                   <span className="si">{n.icon}</span>
                   {n.label}
@@ -267,6 +271,9 @@ export default function AdminDashboard() {
       {/* ── Main area ── */}
       <div className="adm-main">
         <div className="adm-topbar">
+          <button className="adm-sb-toggle" onClick={() => setSbOpen(!sbOpen)} aria-label="Toggle Sidebar">
+            {sbOpen ? '✕' : '☰'}
+          </button>
           <div className="adm-topbar-title">
             {activeNav?.icon} {activeNav?.label}
           </div>
@@ -278,7 +285,7 @@ export default function AdminDashboard() {
 
         <div className="adm-content">
           {tab === 'overview' && (
-            <Overview stats={stats} onNavigate={id => setTab(id)} />
+            <Overview stats={stats} onNavigate={id => { setTab(id); setSbOpen(false); }} />
           )}
 
           {tab === 'about-drdo' && (
