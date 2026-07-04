@@ -413,7 +413,7 @@ Your job is to answer user queries politely and professionally.
 CONTEXT FROM DRDO DATABASE:
 ${contextText}
 ---
-- If the user asks about something not present in the context, answer using your general knowledge but mention that this information is not explicitly from the official website database.
+- If the user asks about something not present in the context, answer using your general knowledge.
 - Do not invent false links, phone numbers, or emails.
 - Be concise, professional, and clear.`;
 
