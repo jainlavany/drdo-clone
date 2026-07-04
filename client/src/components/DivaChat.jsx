@@ -7,10 +7,18 @@ export default function DivaChat() {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [isMaximized, setIsMaximized] = useState(false);
+  const [agentLanguage, setAgentLanguage] = useState('en');
+
+  const getWelcomeMessage = (lang) => {
+    return lang === 'en'
+      ? "Hi ! I am DIVA (DRDO Intelligent Virtual Assistant), how can I help you?"
+      : "नमस्ते! मैं दीवा (DRDO इंटेलिजेंट वर्चुअल असिस्टेंट) हूँ, मैं आपकी क्या मदद कर सकती हूँ?";
+  };
+
   const [messages, setMessages] = useState([
     {
       sender: 'bot',
-      text: "Hi ! I am DIVA (DRDO Intelligent Virtual Assistant), how can I help you?"
+      text: getWelcomeMessage('en')
     }
   ]);
   const [input, setInput] = useState('');
@@ -21,6 +29,23 @@ export default function DivaChat() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  const toggleAgentLanguage = () => {
+    const nextLang = agentLanguage === 'en' ? 'hi' : 'en';
+    setAgentLanguage(nextLang);
+    setMessages((prev) => {
+      // If the chat history only contains the welcome message, swap it to the new language
+      if (prev.length === 0) {
+        return [{ sender: 'bot', text: getWelcomeMessage(nextLang) }];
+      }
+      if (prev.length === 1 && prev[0].sender === 'bot') {
+        if (prev[0].text === getWelcomeMessage('en') || prev[0].text === getWelcomeMessage('hi')) {
+          return [{ sender: 'bot', text: getWelcomeMessage(nextLang) }];
+        }
+      }
+      return prev;
+    });
+  };
 
   const handleSend = async (e) => {
     e.preventDefault();
@@ -38,7 +63,8 @@ export default function DivaChat() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: userMessage,
-          history: messages
+          history: messages,
+          language: agentLanguage
         })
       });
 
@@ -66,7 +92,7 @@ export default function DivaChat() {
   };
 
   const handleClear = () => {
-    setMessages([]);
+    setMessages([{ sender: 'bot', text: getWelcomeMessage(agentLanguage) }]);
   };
 
   return (
@@ -100,6 +126,14 @@ export default function DivaChat() {
               </div>
             </div>
             <div className="diva-header-actions">
+              {/* Language Toggle Button */}
+              <button
+                className="diva-action-btn diva-lang-toggle"
+                onClick={toggleAgentLanguage}
+                title={agentLanguage === 'en' ? "Switch response language to Hindi" : "Switch response language to English"}
+              >
+                🌐 {agentLanguage.toUpperCase()}
+              </button>
               {/* Maximize / Minimize toggle */}
               <button
                 className="diva-action-btn"

@@ -322,7 +322,7 @@ app.get('/api/health', (_, res) => res.json({
 
 app.post('/api/chat', async (req, res) => {
   try {
-    const { message, history } = req.body;
+    const { message, history, language } = req.body;
     if (!message) {
       return res.status(400).json({ error: 'Message is required' });
     }
@@ -398,9 +398,16 @@ app.post('/api/chat', async (req, res) => {
       ? matchedSnippets.join('\n')
       : 'No database context found for this specific query.';
 
+    let langInstruction = '';
+    if (language === 'hi') {
+      langInstruction = `\n- CRITICAL: You MUST write your response entirely in Hindi (हिंदी). Regardless of the language of the user query or history, translate your response and respond ONLY in Hindi. Make sure the grammar and sentence structure are natural and correct in Hindi.`;
+    } else {
+      langInstruction = `\n- CRITICAL: You MUST write your response entirely in English. Regardless of the language of the user query or history, respond ONLY in English.`;
+    }
+
     const systemInstruction = `You are DIVA (DRDO Intelligent Virtual Assistant), the official AI assistant of the DRDO web portal.
 Your job is to answer user queries politely and professionally.
-- Always support basic greetings (hi, hello, how are you, who are you) warmly.
+- Always support basic greetings (hi, hello, how are you, who are you) warmly.${langInstruction}
 - For queries related to the website, technologies, products, or services, use the following database context to give a highly detailed, precise answer:
 ---
 CONTEXT FROM DRDO DATABASE:
