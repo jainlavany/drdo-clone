@@ -1,0 +1,33 @@
+[33mc73247d[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m add eye on admin login
+[33m9aa4966[m feat: expand RAG database context with vacancies, news, and about info
+[33mf634420[m api fix
+[33m23629f7[m config: use working key with gemini-2.5-flash
+[33m63ce541[m import chnges
+[33m9140f12[m switch to gen ai library
+[33m53c9723[m api change
+[33m2ae74a0[m Update API key assignment in index.js
+[33mf54de7d[m new gpt model
+[33m4278df9[m update gpt model
+[33m0ae28c1[m config: use environment variable for gemini api key
+[33m1ca045d[m debug: expose server-side error message in DIVA chat response
+[33mbcf1620[m Update DivaChat.jsx
+[33m48ae9d3[m debug: improve DIVA client-side error parsing and verbose UI output
+[33m7a8569b[m style: replace launcher bubble icon with standard headset support icon
+[33m5a5655d[m style: change DIVA launcher to support girl icon, full-screen maximize/minimize view, clear action, and custom welcome message
+[33m02822eb[m feat: implement DIVA AI Assistant chatbot bubble and Gemini RAG endpoint
+[33m0f0eb5c[m feat: remove quick guide from admin dashboard overview
+[33m0924400[m feat: add mobile responsive sidebar toggle button and backdrop overlay to AdminDashboard
+[33m7d59a81[m feat: restore organizational chart graph at the top of Our Team page
+[33ma84faa8[m feat: Connect ONOS settings and contacts to Admin CMS and database seeding
+[33m27028c6[m feat: connect Resources pages (Photos, Videos, Conferences, ONOS) dynamically to CMS
+[33m8e53990[m feat: migrate Our Team, Contact Us, RTI, and FAQs to dynamic CMS
+[33m1ea5cb3[m style: add mobile responsive layout overrides
+[33m2187c3d[m Update README.md
+[33mdea92b9[m fix: enforce synchronous execution of window.SERVER_BASE_URL via separate init module before React App import
+[33m61b75ca[m fix: resolve top-level SERVER url race condition by initializing window.SERVER_BASE_URL first
+[33m2c2d55a[m fix: resolve hardcoded localhost backend URL in frontend pages and components
+[33m81420b7[m fix: implement database-backed file upload storage for Vercel support
+[33m6c7ae55[m fix: make CORS allowed origins checking robust for all Vercel domains
+[33m60bf93f[m debug: output CORS configuration in health check
+[33md227391[m fix: resolve admin page white screen on Vercel and db connection issues
+[33m81227c4[m Prepare project for Vercel deployment with backend env config and frontend build settings

@@ -9,6 +9,7 @@ export default function AdminLogin() {
   const [password, setPassword] = useState('');
   const [error, setError]       = useState('');
   const [loading, setLoading]   = useState(false);
+  const [showPass, setShowPass] = useState(false);
 
   useEffect(() => {
     verifyToken().then(ok => { if (ok) navigate('/admin/dashboard', { replace: true }); });
@@ -45,8 +46,26 @@ export default function AdminLogin() {
 
           <div className="alog-field">
             <label htmlFor="al-pass">Password</label>
-            <input id="al-pass" type="password" placeholder="••••••••" value={password}
-              onChange={e => setPassword(e.target.value)} required />
+            <div className="alog-pass-wrap">
+              <input
+                id="al-pass"
+                type={showPass ? 'text' : 'password'}
+                placeholder="••••••••"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                className="alog-eye-btn"
+                onMouseEnter={() => setShowPass(true)}
+                onMouseLeave={() => setShowPass(false)}
+                tabIndex={-1}
+                aria-label="Hold to reveal password"
+              >
+                {showPass ? '🙈' : '👁️'}
+              </button>
+            </div>
           </div>
 
           <button type="submit" className="alog-btn" disabled={loading}>
