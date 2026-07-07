@@ -23,30 +23,41 @@ const initialPolicies = [
 export default function ActsPoliciesPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [policies, setPolicies] = useState(initialPolicies);
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('All');
   const [sortOrder, setSortOrder] = useState('latest');
 
+  useEffect(() => {
+    fetch(`${window.SERVER_BASE_URL || 'http://localhost:4000'}/api/acts-policies`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.length > 0) {
+          setPolicies(data);
+        }
+      })
+      .catch(err => console.error('Error fetching acts and policies:', err));
+  }, []);
 
   const filteredPolicies = useMemo(() => {
-    return initialPolicies.filter(item => {
-      const matchesSearch = item.title.toLowerCase().includes(search.toLowerCase());
+    return policies.filter(item => {
+      const matchesSearch = (item.title || '').toLowerCase().includes(search.toLowerCase());
       const matchesType = typeFilter === 'All' || item.type === typeFilter;
       return matchesSearch && matchesType;
     });
-  }, [search, typeFilter]);
-
+  }, [policies, search, typeFilter]);
 
   const sortedPolicies = useMemo(() => {
     return [...filteredPolicies].sort((a, b) => {
+      const tsA = a.timestamp || (a.createdAt ? new Date(a.createdAt).getTime() : 0);
+      const tsB = b.timestamp || (b.createdAt ? new Date(b.createdAt).getTime() : 0);
       if (sortOrder === 'latest') {
-        return b.timestamp - a.timestamp;
+        return tsB - tsA;
       } else {
-        return a.timestamp - b.timestamp;
+        return tsA - tsB;
       }
     });
   }, [filteredPolicies, sortOrder]);
-
 
   const displayedPolicies = useMemo(() => {
     return sortedPolicies.slice(0, 9);
@@ -190,35 +201,43 @@ export default function ActsPoliciesPage() {
               </thead>
               <tbody>
                 {displayedPolicies.length > 0 ? (
-                  displayedPolicies.map((item, index) => (
-                    <tr key={item.id}>
-                      <td>{index + 1}</td>
-                      <td className="ap-table-title">{t(item.title)}</td>
-                      <td className="ap-date-cell">{t(item.date)}</td>
-                      <td>
-                        PDF
-                        <span className="ap-file-info">({item.size})</span>
-                      </td>
-                      <td style={{ textAlign: "center" }}>
-                        <div className="ais-table-cell-actions">
-                          <a
-                            href={`https://drdo.gov.in/drdo/sites/default/files/acts_policies/${item.file}`}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="ap-view-btn"
-                            id={`view-policy-${item.id}`}
-                          >
-                            {t("👁 View")}
-                          </a>
-                          <AISummarizer
-                            item={item}
-                            itemId={item.id || `ap-${index}`}
-                            docLink={`https://drdo.gov.in/drdo/sites/default/files/acts_policies/${item.file}`}
-                          />
-                        </div>
-                      </td>
-                    </tr>
-                  ))
+                  displayedPolicies.map((item, index) => {
+                    const targetLink = item.fileUrl
+                      ? (item.fileUrl.startsWith('http') ? item.fileUrl : `${window.SERVER_BASE_URL || 'http://localhost:4000'}${item.fileUrl}`)
+                      : (item.link
+                        ? (item.link.startsWith('http') ? item.link : `${window.SERVER_BASE_URL || 'http://localhost:4000'}${item.link}`)
+                        : (item.file ? `https://drdo.gov.in/drdo/sites/default/files/acts_policies/${item.file}` : '')
+                      );
+                    return (
+                      <tr key={item._id || item.id}>
+                        <td>{index + 1}</td>
+                        <td className="ap-table-title">{t(item.title)}</td>
+                        <td className="ap-date-cell">{t(item.date)}</td>
+                        <td>
+                          PDF
+                          <span className="ap-file-info">({item.size})</span>
+                        </td>
+                        <td style={{ textAlign: "center" }}>
+                          <div className="ais-table-cell-actions">
+                            <a
+                              href={targetLink}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="ap-view-btn"
+                              id={`view-policy-${item._id || item.id}`}
+                            >
+                              {t("👁 View")}
+                            </a>
+                            <AISummarizer
+                              item={item}
+                              itemId={item._id || item.id || `ap-${index}`}
+                              docLink={targetLink}
+                            />
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
                 ) : (
                   <tr>
                     <td colSpan="5" className="ap-no-results">{t("No records found matching your filters.")}</td>

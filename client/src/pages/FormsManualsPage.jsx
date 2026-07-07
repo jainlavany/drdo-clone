@@ -26,22 +26,33 @@ const initialDocs = [
 export default function FormsManualsPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [docs, setDocs] = useState(initialDocs);
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('All');
   const [categoryFilter, setCategoryFilter] = useState('All');
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
 
+  useEffect(() => {
+    fetch(`${window.SERVER_BASE_URL || 'http://localhost:4000'}/api/forms-manuals`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.length > 0) {
+          setDocs(data);
+        }
+      })
+      .catch(err => console.error('Error fetching forms and manuals:', err));
+  }, []);
 
   const filteredDocs = useMemo(() => {
-    return initialDocs.filter(item => {
-      const matchesSearch = item.title.toLowerCase().includes(search.toLowerCase()) ||
-        item.docNo.toLowerCase().includes(search.toLowerCase());
+    return docs.filter(item => {
+      const matchesSearch = (item.title || '').toLowerCase().includes(search.toLowerCase()) ||
+        (item.docNo || '').toLowerCase().includes(search.toLowerCase());
       const matchesType = typeFilter === 'All' || item.type === typeFilter;
       const matchesCategory = categoryFilter === 'All' || item.category === categoryFilter;
       return matchesSearch && matchesType && matchesCategory;
     });
-  }, [search, typeFilter, categoryFilter]);
+  }, [docs, search, typeFilter, categoryFilter]);
 
 
   const totalItems = filteredDocs.length;
@@ -214,34 +225,42 @@ export default function FormsManualsPage() {
               </thead>
               <tbody>
                 {paginatedDocs.length > 0 ? (
-                  paginatedDocs.map((item, index) => (
-                    <tr key={item.id}>
-                      <td>{indexOfFirstItem + index + 1}</td>
-                      <td className="fm-docno-cell">{item.docNo}</td>
-                      <td className="fm-table-title">{t(item.title)}</td>
-                      <td>{t(item.type)}</td>
-                      <td>{t(item.category)}</td>
-                      <td>
-                        <div className="fm-view-btn-wrap">
-                          <a
-                            href={`https://drdo.gov.in/drdo/sites/default/files/forms_manuals/${item.file}`}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="fm-view-btn"
-                            id={`view-form-${item.id}`}
-                          >
-                            {t("👁 View")}
-                          </a>
-                          <span className="fm-file-info">PDF ({item.size})</span>
-                          <AISummarizer
-                            item={item}
-                            itemId={item.id || `fm-${index}`}
-                            docLink={`https://drdo.gov.in/drdo/sites/default/files/forms_manuals/${item.file}`}
-                          />
-                        </div>
-                      </td>
-                    </tr>
-                  ))
+                  paginatedDocs.map((item, index) => {
+                    const targetLink = item.fileUrl
+                      ? (item.fileUrl.startsWith('http') ? item.fileUrl : `${window.SERVER_BASE_URL || 'http://localhost:4000'}${item.fileUrl}`)
+                      : (item.link
+                        ? (item.link.startsWith('http') ? item.link : `${window.SERVER_BASE_URL || 'http://localhost:4000'}${item.link}`)
+                        : (item.file ? `https://drdo.gov.in/drdo/sites/default/files/forms_manuals/${item.file}` : '')
+                      );
+                    return (
+                      <tr key={item._id || item.id}>
+                        <td>{indexOfFirstItem + index + 1}</td>
+                        <td className="fm-docno-cell">{item.docNo}</td>
+                        <td className="fm-table-title">{t(item.title)}</td>
+                        <td>{t(item.type)}</td>
+                        <td>{t(item.category)}</td>
+                        <td>
+                          <div className="fm-view-btn-wrap">
+                            <a
+                              href={targetLink}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="fm-view-btn"
+                              id={`view-form-${item._id || item.id}`}
+                            >
+                              {t("👁 View")}
+                            </a>
+                            <span className="fm-file-info">PDF ({item.size})</span>
+                            <AISummarizer
+                              item={item}
+                              itemId={item._id || item.id || `fm-${index}`}
+                              docLink={targetLink}
+                            />
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
                 ) : (
                   <tr>
                     <td colSpan="6" className="fm-no-results">{t("No records found matching your filters.")}</td>

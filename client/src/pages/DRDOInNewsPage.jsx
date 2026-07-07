@@ -26,27 +26,38 @@ const initialNews = [
 export default function DRDOInNewsPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [news, setNews] = useState(initialNews);
   const [search, setSearch] = useState('');
   const [sortOrder, setSortOrder] = useState('latest');
 
+  useEffect(() => {
+    fetch(`${window.SERVER_BASE_URL || 'http://localhost:4000'}/api/drdo-in-news`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.length > 0) {
+          setNews(data);
+        }
+      })
+      .catch(err => console.error('Error fetching news:', err));
+  }, []);
 
   const filteredNews = useMemo(() => {
-    return initialNews.filter(item =>
-      item.title.toLowerCase().includes(search.toLowerCase())
+    return news.filter(item =>
+      (item.title || '').toLowerCase().includes(search.toLowerCase())
     );
-  }, [search]);
-
+  }, [news, search]);
 
   const sortedNews = useMemo(() => {
     return [...filteredNews].sort((a, b) => {
+      const tsA = a.timestamp || (a.createdAt ? new Date(a.createdAt).getTime() : 0);
+      const tsB = b.timestamp || (b.createdAt ? new Date(b.createdAt).getTime() : 0);
       if (sortOrder === 'latest') {
-        return b.timestamp - a.timestamp;
+        return tsB - tsA;
       } else {
-        return a.timestamp - b.timestamp;
+        return tsA - tsB;
       }
     });
   }, [filteredNews, sortOrder]);
-
 
   const displayedNews = useMemo(() => {
     return sortedNews.slice(0, 9);
@@ -157,35 +168,43 @@ export default function DRDOInNewsPage() {
               </thead>
               <tbody>
                 {displayedNews.length > 0 ? (
-                  displayedNews.map((item, index) => (
-                    <tr key={item.id}>
-                      <td>{index + 1}</td>
-                      <td className="dn-table-title">{t(item.title)}</td>
-                      <td className="dn-date-cell">{t(item.date)}</td>
-                      <td>
-                        PDF
-                        <span className="dn-file-info">({item.size})</span>
-                      </td>
-                      <td style={{ textAlign: "center" }}>
-                        <div className="ais-table-cell-actions">
-                          <a
-                            href={`https://drdo.gov.in/drdo/sites/default/files/drdo_in_news/${item.file}`}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="dn-view-btn"
-                            id={`view-news-${item.id}`}
-                          >
-                            {t("👁 View")}
-                          </a>
-                          <AISummarizer
-                            item={item}
-                            itemId={item.id || `dn-${index}`}
-                            docLink={`https://drdo.gov.in/drdo/sites/default/files/drdo_in_news/${item.file}`}
-                          />
-                        </div>
-                      </td>
-                    </tr>
-                  ))
+                  displayedNews.map((item, index) => {
+                    const targetLink = item.fileUrl
+                      ? (item.fileUrl.startsWith('http') ? item.fileUrl : `${window.SERVER_BASE_URL || 'http://localhost:4000'}${item.fileUrl}`)
+                      : (item.link
+                        ? (item.link.startsWith('http') ? item.link : `${window.SERVER_BASE_URL || 'http://localhost:4000'}${item.link}`)
+                        : (item.file ? `https://drdo.gov.in/drdo/sites/default/files/drdo_in_news/${item.file}` : '')
+                      );
+                    return (
+                      <tr key={item._id || item.id}>
+                        <td>{index + 1}</td>
+                        <td className="dn-table-title">{t(item.title)}</td>
+                        <td className="dn-date-cell">{t(item.date)}</td>
+                        <td>
+                          PDF
+                          <span className="dn-file-info">({item.size})</span>
+                        </td>
+                        <td style={{ textAlign: "center" }}>
+                          <div className="ais-table-cell-actions">
+                            <a
+                              href={targetLink}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="dn-view-btn"
+                              id={`view-news-${item._id || item.id}`}
+                            >
+                              {t("👁 View")}
+                            </a>
+                            <AISummarizer
+                              item={item}
+                              itemId={item._id || item.id || `dn-${index}`}
+                              docLink={targetLink}
+                            />
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
                 ) : (
                   <tr>
                     <td colSpan="5" className="dn-no-results">{t("No news items found matching your search.")}</td>
