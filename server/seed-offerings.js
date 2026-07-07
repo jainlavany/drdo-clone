@@ -41,12 +41,12 @@ mongoose.connect('mongodb://127.0.0.1:27017/drdo_admin').then(async () => {
 
   if (products === 0) {
     await Product.insertMany([
-      { title: 'High-g MEMS switches', imageUrl: 'https://drdo.gov.in/drdo/sites/default/files/styles/card_image/public/products/mems.jpg' },
-      { title: 'Pru-Decorp', imageUrl: 'https://drdo.gov.in/drdo/sites/default/files/styles/card_image/public/products/pru.jpg' },
-      { title: 'KADAM', imageUrl: 'https://drdo.gov.in/drdo/sites/default/files/styles/card_image/public/products/kadam.jpg' },
-      { title: 'ACADA', imageUrl: 'https://drdo.gov.in/drdo/sites/default/files/styles/card_image/public/products/acada.jpg' },
-      { title: 'HAPO Chamber', imageUrl: 'https://drdo.gov.in/drdo/sites/default/files/styles/card_image/public/products/hapo.jpg' },
-      { title: 'AIP System (Air Independent Propulsion)', imageUrl: 'https://drdo.gov.in/drdo/sites/default/files/styles/card_image/public/products/aip.jpg' },
+      { title: 'High-g MEMS switches', imageUrl: 'https://drdo.gov.in/drdo/sites/default/files/styles/card_image/public/products/mems.jpg', link: 'https://drdo.gov.in/drdo/en/offerings/products/high-g-mems-switches' },
+      { title: 'Pru-Decorp', imageUrl: 'https://drdo.gov.in/drdo/sites/default/files/styles/card_image/public/products/pru.jpg', link: 'https://drdo.gov.in/drdo/en/offerings/products/pru-decorp-tm-and-pru-decorp-mg' },
+      { title: 'KADAM', imageUrl: 'https://drdo.gov.in/drdo/sites/default/files/styles/card_image/public/products/kadam.jpg', link: 'https://drdo.gov.in/drdo/en/offerings/products/kadam' },
+      { title: 'ACADA', imageUrl: 'https://drdo.gov.in/drdo/sites/default/files/styles/card_image/public/products/acada.jpg', link: 'https://drdo.gov.in/drdo/en/offerings/products/automatic-chemical-agent-detector-alarm-acada' },
+      { title: 'HAPO Chamber', imageUrl: 'https://drdo.gov.in/drdo/sites/default/files/styles/card_image/public/products/hapo.jpg', link: 'https://drdo.gov.in/drdo/en/offerings/products/high-altitude-pulmonary-oedema-hapo-chamber' },
+      { title: 'AIP System (Air Independent Propulsion)', imageUrl: 'https://drdo.gov.in/drdo/sites/default/files/styles/card_image/public/products/aip.jpg', link: 'https://drdo.gov.in/drdo/en/offerings/products/air-independent-propulsion-aip-system' },
     ]);
     console.log('✅ Products seeded');
   }

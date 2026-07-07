@@ -311,12 +311,14 @@ export const AWARD_CFG = {
 export const PRODUCT_CFG = {
   fields: [
     { key: 'title',    label: 'Product Name' },
+    { key: 'link',     label: 'Link URL', type: 'url', placeholder: 'https://…' },
     { key: 'imageUrl', label: 'Product Image', type: 'image' },
   ],
-  colHeaders: ['Product Name', 'Image Link'],
-  emptyRow:   { title: '', imageUrl: '' },
+  colHeaders: ['Product Name', 'Link', 'Image Link'],
+  emptyRow:   { title: '', link: '', imageUrl: '' },
   renderRow:  item => (<>
     <td><strong>{item.title}</strong></td>
+    <td>{link(item.link)}</td>
     <td>{link(item.imageUrl)}</td>
   </>),
 };

@@ -13,26 +13,39 @@ function ProductCard({ item }) {
     ? (item.imageUrl.startsWith('http') ? item.imageUrl : `${window.SERVER_BASE_URL || 'http://localhost:4000'}${item.imageUrl}`)
     : '';
 
+  const renderImageContent = () => {
+    if (!imageError && imageUrl) {
+      return (
+        <img
+          src={imageUrl}
+          alt={t(item.title)}
+          className="prod-img"
+          onError={() => setImageError(true)}
+        />
+      );
+    }
+    return (
+      <div className="prod-placeholder">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24"
+          fill="none" stroke="rgba(255,255,255,0.45)" strokeWidth="1.5"
+          strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2" />
+          <circle cx="8.5" cy="8.5" r="1.5" />
+          <polyline points="21 15 16 10 5 21" />
+        </svg>
+      </div>
+    );
+  };
+
   return (
     <div className="prod-card" id={`product-${item._id}`}>
       <div className="prod-thumb">
-        {!imageError && imageUrl ? (
-          <img
-            src={imageUrl}
-            alt={t(item.title)}
-            className="prod-img"
-            onError={() => setImageError(true)}
-          />
+        {item.link ? (
+          <a href={item.link} target="_blank" rel="noopener noreferrer" className="prod-img-link">
+            {renderImageContent()}
+          </a>
         ) : (
-          <div className="prod-placeholder">
-            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24"
-              fill="none" stroke="rgba(255,255,255,0.45)" strokeWidth="1.5"
-              strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="3" width="18" height="18" rx="2" />
-              <circle cx="8.5" cy="8.5" r="1.5" />
-              <polyline points="21 15 16 10 5 21" />
-            </svg>
-          </div>
+          renderImageContent()
         )}
       </div>
       <div className="prod-card-body">

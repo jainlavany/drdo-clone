@@ -104,6 +104,12 @@
     border-bottom: 1px solid #e4eaec;
 }
 
+.prod-img-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
 .prod-img {
     width: 100%;
     height: 100%;
