@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { useState, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
+import AISummarizer from '../components/AISummarizer';
 import './DRDOInNewsPage.css';
 
 const initialNews = [
@@ -166,15 +167,22 @@ export default function DRDOInNewsPage() {
                         <span className="dn-file-info">({item.size})</span>
                       </td>
                       <td style={{ textAlign: "center" }}>
-                        <a
-                          href={`https://drdo.gov.in/drdo/sites/default/files/drdo_in_news/${item.file}`}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="dn-view-btn"
-                          id={`view-news-${item.id}`}
-                        >
-                          {t("👁 View")}
-                        </a>
+                        <div className="ais-table-cell-actions">
+                          <a
+                            href={`https://drdo.gov.in/drdo/sites/default/files/drdo_in_news/${item.file}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="dn-view-btn"
+                            id={`view-news-${item.id}`}
+                          >
+                            {t("👁 View")}
+                          </a>
+                          <AISummarizer
+                            item={item}
+                            itemId={item.id || `dn-${index}`}
+                            docLink={`https://drdo.gov.in/drdo/sites/default/files/drdo_in_news/${item.file}`}
+                          />
+                        </div>
                       </td>
                     </tr>
                   ))

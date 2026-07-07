@@ -208,9 +208,10 @@
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    justify-content: space-between;
+    justify-content: flex-start;
+    gap: 8px;
     flex-shrink: 0;
-    min-width: 110px;
+    min-width: 130px;
 }
 
 .vac-view-btn {

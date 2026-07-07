@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { useState, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
+import AISummarizer from '../components/AISummarizer';
 import './ActsPoliciesPage.css';
 
 const initialPolicies = [
@@ -199,15 +200,22 @@ export default function ActsPoliciesPage() {
                         <span className="ap-file-info">({item.size})</span>
                       </td>
                       <td style={{ textAlign: "center" }}>
-                        <a
-                          href={`https://drdo.gov.in/drdo/sites/default/files/acts_policies/${item.file}`}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="ap-view-btn"
-                          id={`view-policy-${item.id}`}
-                        >
-                          {t("👁 View")}
-                        </a>
+                        <div className="ais-table-cell-actions">
+                          <a
+                            href={`https://drdo.gov.in/drdo/sites/default/files/acts_policies/${item.file}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="ap-view-btn"
+                            id={`view-policy-${item.id}`}
+                          >
+                            {t("👁 View")}
+                          </a>
+                          <AISummarizer
+                            item={item}
+                            itemId={item.id || `ap-${index}`}
+                            docLink={`https://drdo.gov.in/drdo/sites/default/files/acts_policies/${item.file}`}
+                          />
+                        </div>
                       </td>
                     </tr>
                   ))

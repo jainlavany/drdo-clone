@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Footer from '../components/Footer';
 import drdoLogo from '../assets/logo.png';
+import AISummarizer from '../components/AISummarizer';
 import './PublicationsPage.css';
 
 const categories = [
@@ -336,19 +337,26 @@ export default function PublicationsPage() {
                                 <span className="file-info-text">({item.size})</span>
                               </td>
                               <td className="action-col">
-                                <a
-                                  href={targetLink}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="pub-table-view-btn"
-                                  id={`view-pdf-${item._id || item.id}`}
-                                >
-                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                                    <circle cx="12" cy="12" r="3" />
-                                  </svg>
-                                  View
-                                </a>
+                                <div className="ais-table-cell-actions">
+                                  <a
+                                    href={targetLink}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="pub-table-view-btn"
+                                    id={`view-pdf-${item._id || item.id}`}
+                                  >
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                      <circle cx="12" cy="12" r="3" />
+                                    </svg>
+                                    View
+                                  </a>
+                                  <AISummarizer
+                                    item={item}
+                                    itemId={item._id || item.id || `pub-${idx}`}
+                                    docLink={targetLink}
+                                  />
+                                </div>
                               </td>
                             </tr>
                           );

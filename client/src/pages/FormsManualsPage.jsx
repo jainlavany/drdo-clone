@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { useState, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
+import AISummarizer from '../components/AISummarizer';
 import './FormsManualsPage.css';
 
 const initialDocs = [
@@ -232,6 +233,11 @@ export default function FormsManualsPage() {
                             {t("👁 View")}
                           </a>
                           <span className="fm-file-info">PDF ({item.size})</span>
+                          <AISummarizer
+                            item={item}
+                            itemId={item.id || `fm-${index}`}
+                            docLink={`https://drdo.gov.in/drdo/sites/default/files/forms_manuals/${item.file}`}
+                          />
                         </div>
                       </td>
                     </tr>

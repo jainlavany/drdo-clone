@@ -138,7 +138,6 @@ const CompetitionAwardSchema = new Schema({
 const ProductSchema = new Schema({
   title:    { type: String, required: true },
   imageUrl: { type: String, default: '' },
-  link:     { type: String, default: '' },
 }, { timestamps: true });
 
 // ── Important Links ───────────────────────────────────────────────────────────

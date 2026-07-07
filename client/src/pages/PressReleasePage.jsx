@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Footer from '../components/Footer';
+import AISummarizer from '../components/AISummarizer';
 import './PressReleasePage.css';
 
 const initialArchiveRelease = [
@@ -172,15 +173,22 @@ export default function PressReleasePage() {
                         <td className="pr-table-title">{t(item.title)}</td>
                         <td className="pr-date-cell">{t(item.date)}</td>
                         <td style={{ textAlign: "center" }}>
-                          <a
-                            href={targetLink}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="pr-view-btn"
-                            id={`view-archive-item-${item._id || item.id}`}
-                          >
-                            {t("👁 View")}
-                          </a>
+                          <div className="ais-table-cell-actions">
+                            <a
+                              href={targetLink}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="pr-view-btn"
+                              id={`view-archive-item-${item._id || item.id}`}
+                            >
+                              {t("👁 View")}
+                            </a>
+                            <AISummarizer
+                              item={item}
+                              itemId={item._id || item.id || `pr-${index}`}
+                              docLink={targetLink}
+                            />
+                          </div>
                         </td>
                       </tr>
                     );

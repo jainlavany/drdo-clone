@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FaThLarge, FaArchive, FaExternalLinkAlt } from 'react-icons/fa';
 import Footer from '../components/Footer';
 import { buildApiUrl, toAbsoluteUrl } from '../apiConfig';
+import AISummarizer from '../components/AISummarizer';
 import './VacanciesPage.css';
 
 // Dynamic data loaded from backend API
@@ -247,13 +248,18 @@ export default function VacanciesPage() {
                             id={`vac-view-${vac._id}`}
                           >
                             <FaExternalLinkAlt size={11} />
-                            View More
+                            View
                           </a>
                         ) : (
                           <span className="vac-view-btn disabled">
                             No Link
                           </span>
                         )}
+                        <AISummarizer
+                          item={vac}
+                          itemId={vac._id || vac.id || 'vac'}
+                          docLink={targetUrl || '#'}
+                        />
                       </div>
 
                     </div>
