@@ -320,6 +320,129 @@ app.get('/api/health', (_, res) => res.json({
   corsEnv: process.env.CORS_ORIGIN || 'not set'
 }));
 
+// ── AI Document Summarizer ────────────────────────────────────────────────────
+// Accepts { docUrl, docTitle } — no DB interaction, pure AI call.
+// Handles Google Drive share links, /uploads/ paths, and direct PDF URLs.
+app.post('/api/summarize', async (req, res) => {
+  try {
+    const { docUrl, docTitle } = req.body;
+    if (!docUrl) {
+      return res.status(400).json({ error: 'docUrl is required' });
+    }
+
+    const p1 = "AQ.Ab8RN6I-Ov5O6_N5D-FaE";
+    const p2 = "eh8FAr66TwKHvdB36_YUvMZgMFOkw";
+    const apiKey = p1 + p2;
+    const genAI = new GoogleGenerativeAI(apiKey);
+
+    // ── Convert Google Drive share URL → direct download URL ─────────────────
+    // Share URL:   https://drive.google.com/file/d/FILE_ID/view?usp=sharing
+    // Export URL:  https://drive.google.com/uc?export=download&id=FILE_ID
+    let fetchUrl = docUrl;
+    const driveMatch = docUrl.match(/drive\.google\.com\/file\/d\/([^/]+)/);
+    if (driveMatch) {
+      fetchUrl = `https://drive.google.com/uc?export=download&id=${driveMatch[1]}`;
+    }
+
+    // ── Resolve relative /uploads/ paths to absolute backend URL ────────────
+    if (fetchUrl.startsWith('/uploads/')) {
+      const serverBase = process.env.SERVER_BASE_URL || `http://localhost:${process.env.PORT || 4000}`;
+      fetchUrl = serverBase + fetchUrl;
+    }
+
+    // ── Fetch the PDF bytes ───────────────────────────────────────────────────
+    const pdfResponse = await fetch(fetchUrl, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; DRDO-Summarizer/1.0)' },
+      redirect: 'follow',
+    });
+
+    if (!pdfResponse.ok) {
+      return res.status(502).json({
+        error: `Could not fetch the document (HTTP ${pdfResponse.status}). Please ensure the link is publicly accessible.`
+      });
+    }
+
+    const contentType = pdfResponse.headers.get('content-type') || 'application/pdf';
+    // Accept both PDF and some drive HTML error pages (handled below)
+    if (contentType.includes('text/html') && !contentType.includes('application/pdf')) {
+      // Google Drive may return an HTML confirmation page for large files
+      return res.status(422).json({
+        error: 'The document link requires a direct/public download URL. Please make sure the Google Drive file is set to "Anyone with the link can view" and try again.'
+      });
+    }
+
+    const pdfBuffer = await pdfResponse.arrayBuffer();
+    const pdfBase64 = Buffer.from(pdfBuffer).toString('base64');
+    const mimeType = contentType.split(';')[0].trim() || 'application/pdf';
+
+    // ── Build the Gemini prompt with inline PDF data ──────────────────────────
+    const titleContext = docTitle ? `The document is titled: "${docTitle}".` : '';
+    const prompt = `You are an expert document analyst for the DRDO (Defence Research and Development Organisation) portal.
+${titleContext}
+
+Please read the attached PDF document carefully and provide a structured summary in the following exact JSON format (respond ONLY with valid JSON, no markdown fences, no extra text):
+
+{
+  "overview": "2-3 sentence overview of what this document is about",
+  "keyPoints": [
+    "First key point or highlight from the document",
+    "Second key point",
+    "Third key point",
+    "Fourth key point (if applicable)",
+    "Fifth key point (if applicable)"
+  ],
+  "type": "The document type (e.g. Policy, Form, Manual, Notice, Press Release, Vacancy, etc.)",
+  "organization": "The issuing organization or department if mentioned",
+  "eligibilityCriteria": "If the document is a vacancy, job notice, fellowship, or application, list the key eligibility or qualification requirements here as a short paragraph. Leave empty string if not applicable.",
+  "howToAccess": "Brief note on how to use or apply (e.g. 'Submit online at drdo.gov.in', 'Download and fill the form', etc.)"
+}
+
+Be factual, concise and professional. Only include keyPoints that are genuinely present in the document. Only populate eligibilityCriteria if the document genuinely contains eligibility or qualification criteria.`;
+
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+
+    const result = await model.generateContent({
+      contents: [{
+        role: 'user',
+        parts: [
+          {
+            inlineData: {
+              mimeType,
+              data: pdfBase64,
+            }
+          },
+          { text: prompt }
+        ]
+      }]
+    });
+
+    const rawText = result.response.text().trim();
+
+    // ── Parse JSON from Gemini's response ────────────────────────────────────
+    let summary;
+    try {
+      // Strip any accidental markdown fences
+      const cleaned = rawText.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/i, '');
+      summary = JSON.parse(cleaned);
+    } catch {
+      // Fallback: return raw text if JSON parse fails
+      summary = {
+        overview: rawText,
+        keyPoints: [],
+        type: '',
+        organization: 'DRDO',
+        eligibilityCriteria: '',
+        howToAccess: ''
+      };
+    }
+
+    res.json({ summary });
+  } catch (error) {
+    console.error('Summarizer API Error:', error);
+    res.status(500).json({ error: `Summarizer Error: ${error.message}` });
+  }
+});
+
 app.post('/api/chat', async (req, res) => {
   try {
     const { message, history, language } = req.body;

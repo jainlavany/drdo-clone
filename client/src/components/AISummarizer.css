@@ -48,7 +48,7 @@
   background: #d4ecec;
 }
 
-/* Sparkle icon inherits teal from button text colour */
+
 .ais-spark-icon {
   width: 13px;
   height: 13px;
@@ -56,7 +56,7 @@
   color: currentColor;
 }
 
-/* "New" badge */
+
 .ais-new-badge {
   position: absolute;
   top: -7px;
@@ -74,9 +74,7 @@
 }
 
 
-/* ═══════════════════════════════════════════════════════════════════
-   MOBILE-ONLY OVERLAY BACKDROP
-   ═══════════════════════════════════════════════════════════════════ */
+
 .ais-mobile-overlay {
   display: none;
   /* hidden on desktop */
@@ -105,13 +103,7 @@
 }
 
 
-/* ═══════════════════════════════════════════════════════════════════
-   SIDEBAR PANEL
-   ─────────────────────────────────────────────────────────────────
-   • position:fixed → ZERO effect on document flow
-   • Always in the DOM; open/closed state = translateX only
-   • No body padding changes anywhere
-   ═══════════════════════════════════════════════════════════════════ */
+
 .ais-panel {
   position: fixed;
   top: 0;
@@ -119,24 +111,24 @@
   width: 370px;
   max-width: 95vw;
   height: 100dvh;
-  /* full viewport height */
+
   background: #ffffff;
   z-index: 1100;
 
   display: flex;
   flex-direction: column;
 
-  /* Slide out to the right when closed */
+
   transform: translateX(100%);
   transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
     box-shadow 0.32s ease;
 
-  /* No shadow when hidden */
+
   box-shadow: none;
   border-left: 1px solid transparent;
   overflow: hidden;
 
-  /* Prevent the panel from being a pointer-events sink when hidden */
+
   pointer-events: none;
   visibility: hidden;
 }
@@ -150,7 +142,7 @@
 }
 
 
-/* ── Panel Header ─────────────────────────────────────────────────── */
+
 .ais-panel-header {
   display: flex;
   align-items: center;
@@ -219,7 +211,7 @@
 }
 
 
-/* ── Disclaimer notice ────────────────────────────────────────────── */
+
 .ais-notice {
   display: flex;
   align-items: flex-start;
@@ -248,7 +240,7 @@
 }
 
 
-/* ── Scrollable body ──────────────────────────────────────────────── */
+
 .ais-panel-body {
   flex: 1;
   overflow-y: auto;
@@ -275,7 +267,7 @@
 }
 
 
-/* ── Document title ───────────────────────────────────────────────── */
+
 .ais-doc-title {
   font-size: 14.5px;
   font-weight: 700;
@@ -291,7 +283,7 @@
 }
 
 
-/* ── Section block ────────────────────────────────────────────────── */
+
 .ais-section {
   margin-bottom: 18px;
 }
@@ -314,14 +306,13 @@
   margin: 0;
 }
 
-/* Placeholder greyed-italic style */
 .ais-placeholder-text {
   color: #a0adb5;
   font-style: italic;
 }
 
 
-/* ── Key Details list ─────────────────────────────────────────────── */
+
 .ais-detail-list {
   list-style: none;
   margin: 0;
@@ -363,7 +354,7 @@
 }
 
 
-/* ── Bullet list ──────────────────────────────────────────────────── */
+
 .ais-bullet-list {
   margin: 0;
   padding-left: 18px;
@@ -379,7 +370,7 @@
 }
 
 
-/* ── Panel Footer ─────────────────────────────────────────────────── */
+
 .ais-panel-footer {
   display: flex;
   align-items: center;
@@ -406,7 +397,7 @@
   transition: background 0.2s;
   white-space: nowrap;
   cursor: not-allowed;
-  /* non-functional for now */
+
   opacity: 0.85;
 }
 
@@ -439,7 +430,7 @@
 }
 
 
-/* ── Feedback row ─────────────────────────────────────────────────── */
+
 .ais-feedback-row {
   display: flex;
   align-items: center;
@@ -482,7 +473,6 @@
 }
 
 
-/* ── Responsive ───────────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .ais-panel {
     width: 320px;
@@ -502,27 +492,27 @@
   }
 }
 
-/* ── Desktop Layout Shifting when AI Summary is open ──────────────── */
+
 @media (min-width: 769px) {
-  /* Smooth transitions for page content shifting */
+
   .connect-page-wrapper,
   .diva-wrapper {
     transition: padding-right 0.32s cubic-bezier(0.22, 1, 0.36, 1),
-                right 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+      right 0.32s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  /* Shrink page content container to make room on the right for the panel */
+
   body.ais-panel-open-active .connect-page-wrapper {
     padding-right: 370px !important;
   }
 
-  /* Chatbot shifts left to not overlap summarizer panel */
+
   body.ais-panel-open-active .diva-wrapper {
     right: 395px !important;
   }
 }
 
-/* Position summarizer panel below the 192px sticky header on desktops */
+
 @media (min-width: 901px) {
   .ais-panel {
     top: 192px !important;
