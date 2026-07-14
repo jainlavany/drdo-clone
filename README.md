@@ -146,25 +146,3 @@ The server creates a folder called `uploads/` automatically in the `server` dire
 
 ---
 
-## 🔍 Troubleshooting & FAQs
-
-### 1. MongoDB Connection Refused (`ECONNREFUSED 127.0.0.1:27017`)
-* **Cause:** MongoDB service is not running or is configured to bind to a different IP.
-* **Fix:** Ensure the MongoDB service is active. Run `sudo systemctl status mongod` on Linux, or verify your Docker container is running with `docker ps`.
-
-### 2. CORS Errors in the Browser
-* **Cause:** The backend allows requests only from designated local origins (`http://localhost:5173`, `http://localhost:5174`, `http://localhost:5175`). If your Vite dev server starts on a different port (e.g. `5176`), calls will be blocked.
-* **Fix:** 
-  * Check the port Vite is running on in the frontend console.
-  * If needed, update the allowed origins array in `server/index.js` (line 30):
-    ```javascript
-    app.use(cors({ origin: ['http://localhost:5173','http://localhost:5174','http://localhost:5175', 'http://localhost:YOUR_PORT'] }));
-    ```
-
-### 3. Images or PDFs Fail to Upload
-* **Cause:** The directory `server/uploads` may not exist or does not have write permissions.
-* **Fix:** The server attempts to automatically create the folder recursively, but if it fails due to permissions, create them manually:
-  ```bash
-  mkdir -p server/uploads/images server/uploads/pdfs
-  chmod -R 775 server/uploads
-  ```
